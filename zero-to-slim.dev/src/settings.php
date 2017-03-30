@@ -2,8 +2,14 @@
 return [
     'settings' => [
         'displayErrorDetails' => true, // set to false in production
-        'addContentLengthHeader' => false, // Allow the web server to send the content-length header
-
+        'dbConn'=>[
+          'username'=>'root',
+          'password'=>'hart',
+          'host'=>'localhost',
+          'dbname'=>'mydb',
+          'db'=>'mysql',
+          'displayErrorDetails' => true,
+        ],
         // Renderer settings
         'renderer' => [
             'template_path' => __DIR__ . '/../templates/',
@@ -13,7 +19,6 @@ return [
         'logger' => [
             'name' => 'slim-app',
             'path' => __DIR__ . '/../logs/app.log',
-            'level' => \Monolog\Logger::DEBUG,
         ],
     ],
 ];
