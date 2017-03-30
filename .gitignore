@@ -1,0 +1,4 @@
+.vagrant/
+zero-to-slim.dev/vendor/
+zero-to-slim.dev/logs/*
+!/logs/README.md
