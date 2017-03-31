@@ -1,11 +1,19 @@
 <?php
-header("Access-Control-Allow-Headers: Content-Type");
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: POST,GET,OPTIONS');
+header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept');
 
+// header("Access-Control-Allow-Headers: Content-Type");
+// header('Access-Control-Allow-Origin: *');
+//
+// header('Access-Control-Allow-Methods: GET, POST');
+//
+// header("Access-Control-Allow-Headers: X-Requested-With");
 // Routes
 $servername = "localhost";
 $username = "root";
 
-// date_default_timezone_set('America/Chicago');
+date_default_timezone_set('America/Chicago');
 $app->post('/forgot', function($request,$response,$args){
 // 	require '../vendor/autoload.php';
 // 	$forgot = file_get_contents('forgot.html', true);
@@ -36,19 +44,15 @@ $app->post('/forgot', function($request,$response,$args){
 });
 $app->get('/majors', function ($request, $response, $args) {
   try{
-
     $db = $this->dbConn;
-    echo "in";
 
     $sql = 'SELECT name
             FROM TEAM;';
     $q = $db->query($sql);
 
     $check = $q->fetchAll(PDO::FETCH_ASSOC);
-    echo $check;
     foreach($check as $row){
       $arr[] = $row;
-      echo $arr;
     }
     $returnArr = array();
     $assocArr = array();
@@ -62,9 +66,10 @@ $app->get('/majors', function ($request, $response, $args) {
 
       $AssocArr[] = $returnArr;
     }
-    return $response->write(json_encode($fetch));
+    return $response->write(json_encode($AssocArr));
   }
   catch(PDOException $e){
+    print "Error!: " . $e->getMessage() . "<br/>";
     $this->notFoundHandler;
   }
 });
