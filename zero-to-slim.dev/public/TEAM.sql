@@ -1,2 +1,2 @@
-insert into TEAM (id, name, logo, blog, charterCompleted) values (2, 'Adams Group', 'http://dummyimage.com/121x123.jpg/5fa2dd/ffffff', 'Praesent blandit.', true);
-insert into TEAM (id, name, logo, blog, charterCompleted) values (1, 'Homenick, Runte and Harvey', 'http://dummyimage.com/144x210.jpg/dddddd/000000', 'Maecenas rhoncus aliquam lacus.', true);
+insert into TEAM (id, name, logo, blog, charterCompleted,  TEAM_CHARTER_id ) values (1, 'Aufderhar-Friesen', 'http://dummyimage.com/238x127.jpg/ff4444/ffffff', 'In est risus, auctor sed, tristique in, tempus sit amet, sem.', false, 2);
+insert into TEAM (id, name, logo, blog, charterCompleted,  TEAM_CHARTER_id ) values (2, 'Wolff LLC', 'http://dummyimage.com/224x107.bmp/5fa2dd/ffffff', 'Fusce congue, diam id ornare imperdiet, sapien urna pretium nisl, ut volutpat sapien arcu sed augue.', true, 1);
