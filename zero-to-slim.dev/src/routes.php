@@ -106,3 +106,20 @@ $app->get('/sections', function ($request, $response, $args) {
     $this->notFoundHandler;
   }
 });
+$app->get('/sections/{section}', function ($request, $response, $args) {
+  try{
+    $section = $request->getAttribute('section');
+    $db = $this->dbConn;
+    $sql = "SELECT *
+            FROM STUDENT s
+            INNER JOIN CLASS c
+            ON s.CLASS_id = c.id
+            AND c.section = '$section';";
+    $q = $db->query($sql);
+    $check = $q->fetchAll(PDO::FETCH_ASSOC);
+    return $response->write(json_encode($check));
+  }
+  catch(PDOException $e){
+    $this->notFoundHandler;
+  }
+});
