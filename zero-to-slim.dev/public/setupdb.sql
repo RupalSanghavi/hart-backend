@@ -22,7 +22,8 @@ CREATE TABLE IF NOT EXISTS `mydb`.`TEAM` (
   `name` VARCHAR(45) NULL,
   `logo` VARCHAR(45) NULL,
   `blog` VARCHAR(45) NULL,
-  `charterCompleted` VARCHAR(45) NULL,
+  `charterCompleted` TINYINT NULL,
+  `TEAM_CHARTER_id` INT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
 
@@ -32,27 +33,10 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`CLASS` (
   `id` INT NOT NULL,
-  `year` VARCHAR(45) NULL,
+  `year` YEAR NULL,
   `semester` VARCHAR(45) NULL,
   `section` VARCHAR(45) NULL,
   PRIMARY KEY (`id`))
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `mydb`.`TEAM_CHARTER`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`TEAM_CHARTER` (
-  `ideating` VARCHAR(2000) NULL,
-  `decision_making` VARCHAR(2000) NULL,
-  `disputes` VARCHAR(2000) NULL,
-  `conflicts` VARCHAR(2000) NULL,
-  `fun` VARCHAR(2000) NULL,
-  `team_purpose` VARCHAR(2000) NULL,
-  `stakeholders` VARCHAR(2000) NULL,
-  `mission` VARCHAR(2000) NULL,
-  `TEAM_id` INT NOT NULL,
-  PRIMARY KEY (`TEAM_id`))
 ENGINE = InnoDB;
 
 
@@ -68,19 +52,12 @@ CREATE TABLE IF NOT EXISTS `mydb`.`SPRINT` (
   `scribe` VARCHAR(45) NULL,
   `info` VARCHAR(45) NULL,
   `TEAM_id` INT NOT NULL,
-  `TEAM_CHARTER_TEAM_id` INT NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_SPRINT_TEAM_idx` (`TEAM_id` ASC),
   UNIQUE INDEX `TEAM_id_UNIQUE` (`TEAM_id` ASC),
-  INDEX `fk_SPRINT_TEAM_CHARTER1_idx` (`TEAM_CHARTER_TEAM_id` ASC),
   CONSTRAINT `fk_SPRINT_TEAM`
     FOREIGN KEY (`TEAM_id`)
     REFERENCES `mydb`.`TEAM` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_SPRINT_TEAM_CHARTER1`
-    FOREIGN KEY (`TEAM_CHARTER_TEAM_id`)
-    REFERENCES `mydb`.`TEAM_CHARTER` (`TEAM_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -113,7 +90,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`STUDENT` (
   `first_name` VARCHAR(45) NULL,
   `last_name` VARCHAR(45) NULL,
   `image` VARCHAR(45) NULL,
-  `major` VARCHAR(45) NULL,
+  `major` VARCHAR(5) NULL,
   `info` VARCHAR(45) NULL,
   `HLA_focus` VARCHAR(45) NULL,
   `knowledge` VARCHAR(45) NULL,
@@ -121,7 +98,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`STUDENT` (
   `CLASS_id` INT NULL,
   `TEAM_id` INT NULL,
   `id` INT NOT NULL,
-  `email` VARCHAR(45) NULL,
+  `email` VARCHAR(255) NULL,
   `MBDForm_id` INT NULL,
   `salt` VARCHAR(250) NULL,
   `hash` VARCHAR(300) NULL,
@@ -261,6 +238,30 @@ CREATE TABLE IF NOT EXISTS `mydb`.`EVENTS` (
   CONSTRAINT `fk_EVENTS_STAFF1`
     FOREIGN KEY (`STAFF_id`)
     REFERENCES `mydb`.`STAFF` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`TEAM_CHARTER`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`TEAM_CHARTER` (
+  `ideating` VARCHAR(2000) NULL,
+  `decision_making` VARCHAR(2000) NULL,
+  `disputes` VARCHAR(2000) NULL,
+  `conflicts` VARCHAR(2000) NULL,
+  `fun` VARCHAR(2000) NULL,
+  `team_purpose` VARCHAR(2000) NULL,
+  `stakeholders` VARCHAR(2000) NULL,
+  `mission` VARCHAR(2000) NULL,
+  `TEAM_id` INT NOT NULL,
+  `id` INT NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `TEAM_id_idx` (`TEAM_id` ASC),
+  CONSTRAINT `TEAM_id`
+    FOREIGN KEY (`TEAM_id`)
+    REFERENCES `mydb`.`TEAM` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
