@@ -93,3 +93,16 @@ $app->get('/teams', function ($request, $response, $args) {
   //   $this->notFoundHandler;
   // }
 });
+$app->get('/sections', function ($request, $response, $args) {
+  try{
+    $db = $this->dbConn;
+    $sql = 'SELECT section
+            FROM CLASS;';
+    $q = $db->query($sql);
+    $check = $q->fetchAll(PDO::FETCH_ASSOC);
+    return $response->write(json_encode($check));
+  }
+  catch(PDOException $e){
+    $this->notFoundHandler;
+  }
+});
