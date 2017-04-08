@@ -11,6 +11,7 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 -- -----------------------------------------------------
 -- Schema mydb
 -- -----------------------------------------------------
+DROP SCHEMA IF EXISTS `mydb`;
 CREATE SCHEMA IF NOT EXISTS `mydb` DEFAULT CHARACTER SET utf8 ;
 USE `mydb` ;
 
@@ -172,7 +173,8 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `mydb`.`HLA_FOCUS` (
   `focus_name` VARCHAR(45) NULL,
   `STUDENT_id` INT NOT NULL,
-  PRIMARY KEY (`STUDENT_id`),
+  `id` INT NOT NULL,
+  PRIMARY KEY (`id`),
   CONSTRAINT `fk_HLA_FOCUS_STUDENT1`
     FOREIGN KEY (`STUDENT_id`)
     REFERENCES `mydb`.`STUDENT` (`id`)
@@ -186,7 +188,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`STAFF` (
   `id` INT NOT NULL,
-  `admin` TINYINT(1) NULL,
+  `admin` TINYINT NULL,
   `first_name` VARCHAR(45) NULL,
   `last_name` VARCHAR(45) NULL,
   PRIMARY KEY (`id`))
