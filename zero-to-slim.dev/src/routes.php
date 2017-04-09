@@ -197,3 +197,33 @@ $app->post('/newstudent', function($request,$response,$args){
             WHERE id = '$student_id'";
     $db->query($sql);
 });
+$app->post('/login',function($request,$response,$args){
+    $db = $this->dbConn;
+    $data = $request->getParsedBody();
+    $username = $data['username'];
+    $password = $data['password'];
+    // session_destroy();
+    // print_r($_SESSION);
+    // print_r(count($_SESSION));
+    session_start();
+    $_SESSION["loggedIn"] = true;
+    // print_r($_SESSION);
+    // print_r(count($_SESSION));
+});
+$app->get('/checkauth',function($request,$response,$args){
+   $auth = 0;
+   if(count($_SESSION) == 0){}
+   else if($_SESSION["loggedIn"] == true){
+      $auth = 1;
+    }
+   else {}
+   return $response->write(json_encode($auth));
+
+});
+$app->post('/logout',function($request,$response,$args){
+    $db = $this->dbConn;
+    $data = $request->getParsedBody();
+    $username = $data['username'];
+    $password = $data['password'];
+    session_destroy();
+});
