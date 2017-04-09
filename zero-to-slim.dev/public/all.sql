@@ -25,7 +25,14 @@ CREATE TABLE IF NOT EXISTS `mydb`.`TEAM` (
   `blog` VARCHAR(45) NULL,
   `charterCompleted` TINYINT NULL,
   `TEAM_CHARTER_id` INT NULL,
-  PRIMARY KEY (`id`))
+  `CLASS_id` INT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_TEAM_CLASS1_idx` (`CLASS_id` ASC),
+  CONSTRAINT `fk_TEAM_CLASS1`
+    FOREIGN KEY (`CLASS_id`)
+    REFERENCES `mydb`.`CLASS` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
