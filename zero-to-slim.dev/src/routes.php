@@ -177,3 +177,15 @@ $app->get('/teams',function($request,$response,$args){
     $this->notFoundHandler;
   }
 });
+$app->post('/newstudent', function($request,$response,$args){
+    $db = $this->dbConn;
+    $data = $request->getParsedBody();
+    $student_id = $data['student_id'];
+    echo $student_id;
+    $team_id = $data['team_id'];
+    echo $team_id;
+    $sql = "UPDATE STUDENT
+            SET TEAM_id = '$team_id'
+            WHERE id = '$student_id'";
+    $db->query($sql);
+});
