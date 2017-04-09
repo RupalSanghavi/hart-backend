@@ -73,26 +73,7 @@ $app->get('/majors', function ($request, $response, $args) {
     $this->notFoundHandler;
   }
 });
-$app->get('/teams', function ($request, $response, $args) {
-  // try{
-  //   $db = $this->dbConn;
-  //   $sql = 'SELECT *
-  //           FROM TEAM';
-  //   $q = $db->query($sql);
-  //   $check = $q->fetchAll(PDO::FETCH_ASSOC);
-  //   foreach($check as $row){
-  //     $arr[] = $row;
-  //   }
-  //   $returnArr = array();
-  //   foreach($arr as $row){
-  //     $returnArr['']
-  //   }
-  //   return $response->write(json_encode($check));
-  // }
-  // catch(PDOException $e){
-  //   $this->notFoundHandler;
-  // }
-});
+
 $app->get('/sections', function ($request, $response, $args) {
   try{
     $db = $this->dbConn;
@@ -170,4 +151,29 @@ $app->get('/team/{team_id}', function($request,$response,$args){
     $this->notFoundHandler;
   }
 
+});
+$app->get('/teams',function($request,$response,$args){
+  try{
+    $db = $this->dbConn;
+    $sql = "SELECT *
+            FROM TEAM";
+    $q = $db->query($sql);
+    $teams = $q->fetchAll(PDO::FETCH_ASSOC);
+    $obj['teams'] = $teams;
+    $i = 0;
+    foreach($teams as $team){
+      $team_id = $team['id'];
+      $sql = "SELECT id, first_name, last_name,image
+              FROM STUDENT
+              WHERE TEAM_id = '$team_id'";
+      $q = $db->query($sql);
+      $members = $q->fetchAll(PDO::FETCH_ASSOC);
+      $obj['teams'][$i]['members'] = $members;
+      $i += 1;
+    }
+    return $response->write(json_encode($obj));
+  }
+  catch(PDOException $e){
+    $this->notFoundHandler;
+  }
 });
