@@ -98,7 +98,8 @@ $app->get('/sections/{section}', function ($request, $response, $args) {
             AND c.section = '$section';";
     $q = $db->query($sql);
     $check = $q->fetchAll(PDO::FETCH_ASSOC);
-    return $response->write(json_encode($check));
+    $obj['students'] = $check;
+    return $response->write(json_encode($obj));
   }
   catch(PDOException $e){
     $this->notFoundHandler;
@@ -139,12 +140,19 @@ $app->get('/team/{team_id}', function($request,$response,$args){
             WHERE id = '$team_id'";
     $q = $db->query($sql);
     $check = $q->fetch(PDO::FETCH_ASSOC);
+    $CLASS_id = $check['CLASS_id'];
     $sql = "SELECT id, first_name, last_name
             FROM STUDENT
             WHERE TEAM_id = '$team_id'";
     $q = $db->query($sql);
     $members = $q->fetchAll(PDO::FETCH_ASSOC);
+    $sql = "SELECT section
+            FROM CLASS
+            WHERE id = '$CLASS_id'";
+    $q = $db->query($sql);
+    $section = $q->fetch(PDO::FETCH_ASSOC);
     $check['members'] = $members;
+    $check['section'] = $section['section'];
     return $response->write(json_encode($check));
   }
   catch(PDOException $e){
