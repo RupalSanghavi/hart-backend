@@ -110,7 +110,7 @@ $app->get('/sections/{section}', function ($request, $response, $args) {
   try{
     $section = $request->getAttribute('section');
     $db = $this->dbConn;
-    $sql = "SELECT *
+    $sql = "SELECT s.*
             FROM STUDENT s
             INNER JOIN CLASS c
             ON s.CLASS_id = c.id
