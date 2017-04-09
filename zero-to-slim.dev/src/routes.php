@@ -148,3 +148,26 @@ $app->post('/team', function($request,$response,$args){
     echo "SUCCESS";
 
 });
+$app->get('/team/{team_id}', function($request,$response,$args){
+  $team_id = $request->getAttribute('team_id');
+  $db = $this->dbConn;
+  try{
+    $db = $this->dbConn;
+    $sql = "SELECT *
+            FROM TEAM
+            WHERE id = '$team_id'";
+    $q = $db->query($sql);
+    $check = $q->fetch(PDO::FETCH_ASSOC);
+    $sql = "SELECT id, first_name, last_name
+            FROM STUDENT
+            WHERE TEAM_id = '$team_id'";
+    $q = $db->query($sql);
+    $members = $q->fetchAll(PDO::FETCH_ASSOC);
+    $check['members'] = $members;
+    return $response->write(json_encode($check));
+  }
+  catch(PDOException $e){
+    $this->notFoundHandler;
+  }
+
+});
