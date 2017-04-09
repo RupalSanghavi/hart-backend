@@ -19,7 +19,7 @@ USE `mydb` ;
 -- Table `mydb`.`TEAM`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`TEAM` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NULL,
   `logo` VARCHAR(45) NULL,
   `blog` VARCHAR(45) NULL,

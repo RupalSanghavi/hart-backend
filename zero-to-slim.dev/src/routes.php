@@ -123,3 +123,28 @@ $app->get('/sections/{section}', function ($request, $response, $args) {
     $this->notFoundHandler;
   }
 });
+$app->post('/team', function($request,$response,$args){
+    $db = $this->dbConn;
+    $data = $request->getParsedBody();
+    $teamName = $data['name'];
+    $members = $data['members'];
+    //$team_id = uniqid();
+    $sql = "INSERT INTO TEAM
+            (id, name,logo,blog,charterCompleted,TEAM_CHARTER_id)
+            VALUES (NULL,'$teamName',NULL,NULL,0,NULL)";
+    $db->query($sql);
+    $sql = "SELECT id
+            FROM TEAM
+            WHERE name = '$teamName'";
+    $q = $db->query($sql);
+    $obj = $q->fetch(PDO::FETCH_ASSOC);
+    $team_id = $obj['id'];
+    foreach($members as $member){
+      $sql = "UPDATE STUDENT
+              SET TEAM_id ='$team_id'
+              WHERE id = '$member'";
+      $db->query($sql);
+    }
+    echo "SUCCESS";
+
+});
