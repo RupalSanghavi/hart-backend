@@ -18,7 +18,7 @@ USE `mydb` ;
 -- Table `mydb`.`TEAM`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`TEAM` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NULL,
   `logo` VARCHAR(45) NULL,
   `blog` VARCHAR(45) NULL,
@@ -31,8 +31,8 @@ ENGINE = InnoDB;
 -- Table `mydb`.`CLASS`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`CLASS` (
-  `id` INT NOT NULL,
-  `year` VARCHAR(45) NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `year` YEAR NULL,
   `semester` VARCHAR(45) NULL,
   `section` VARCHAR(45) NULL,
   PRIMARY KEY (`id`))
@@ -60,7 +60,7 @@ ENGINE = InnoDB;
 -- Table `mydb`.`SPRINT`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`SPRINT` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `sprint_number` INT NULL,
   `start_date` DATE NULL,
   `end_date` DATE NULL,
@@ -90,7 +90,7 @@ ENGINE = InnoDB;
 -- Table `mydb`.`MBDForm`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`MBDForm` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `More` VARCHAR(2000) NULL,
   `Better` VARCHAR(2000) NULL,
   `Different` VARCHAR(2000) NULL,
@@ -153,7 +153,7 @@ ENGINE = InnoDB;
 -- Table `mydb`.`TEAM_ROLES`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`TEAM_ROLES` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
@@ -185,7 +185,7 @@ ENGINE = InnoDB;
 -- Table `mydb`.`RESOURCES`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`RESOURCES` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `link` VARCHAR(45) NULL,
   `name` VARCHAR(45) NULL,
   `category` VARCHAR(45) NULL,
@@ -199,7 +199,8 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `mydb`.`HLA_FOCUS` (
   `focus_name` VARCHAR(45) NULL,
   `STUDENT_id` INT NOT NULL,
-  PRIMARY KEY (`STUDENT_id`),
+  `id` INT NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`),
   CONSTRAINT `fk_HLA_FOCUS_STUDENT1`
     FOREIGN KEY (`STUDENT_id`)
     REFERENCES `mydb`.`STUDENT` (`id`)
@@ -212,8 +213,8 @@ ENGINE = InnoDB;
 -- Table `mydb`.`STAFF`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`STAFF` (
-  `id` INT NOT NULL,
-  `admin` TINYINT(1) NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `admin` TINYINT NULL,
   `first_name` VARCHAR(45) NULL,
   `last_name` VARCHAR(45) NULL,
   PRIMARY KEY (`id`))
@@ -230,7 +231,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`ANNOUNCEMENTS` (
   `priority` INT NULL,
   `creator` VARCHAR(45) NULL,
   `STAFF_id` INT NOT NULL,
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`),
   INDEX `fk_ANNOUNCEMENTS_STAFF1_idx` (`STAFF_id` ASC),
   UNIQUE INDEX `STAFF_id_UNIQUE` (`STAFF_id` ASC),
@@ -246,7 +247,7 @@ ENGINE = InnoDB;
 -- Table `mydb`.`EVENTS`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`EVENTS` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `title` VARCHAR(45) NULL,
   `start_date` DATE NULL,
   `end_date` DATE NULL,
@@ -261,6 +262,30 @@ CREATE TABLE IF NOT EXISTS `mydb`.`EVENTS` (
   CONSTRAINT `fk_EVENTS_STAFF1`
     FOREIGN KEY (`STAFF_id`)
     REFERENCES `mydb`.`STAFF` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`TEAM_CHARTER`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`TEAM_CHARTER` (
+  `ideating` VARCHAR(2000) NULL,
+  `decision_making` VARCHAR(2000) NULL,
+  `disputes` VARCHAR(2000) NULL,
+  `conflicts` VARCHAR(2000) NULL,
+  `fun` VARCHAR(2000) NULL,
+  `team_purpose` VARCHAR(2000) NULL,
+  `stakeholders` VARCHAR(2000) NULL,
+  `mission` VARCHAR(2000) NULL,
+  `TEAM_id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`),
+  INDEX `TEAM_id_idx` (`TEAM_id` ASC),
+  CONSTRAINT `TEAM_id`
+    FOREIGN KEY (`TEAM_id`)
+    REFERENCES `mydb`.`TEAM` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
