@@ -404,7 +404,21 @@ $app->get('/announcements/{quantity}',function($request,$response,$args){
             FROM ANNOUNCEMENTS";
     $q = $db->query($sql);
     $announcements = $q->fetchAll(PDO::FETCH_ASSOC);
-    return $response->write(json_encode($announcements));
+    $annArr = [];
+    foreach($announcements as $announcement){
+
+      $obj = array();
+      $obj['id'] = $announcement['id'];
+      $obj['title'] = $announcement['title'];
+      $obj['text'] = $announcement['body'];
+      $obj['sender'] =  $announcement['creator'];
+      $obj['priority'] = $announcement['priority'];
+      $obj['timestamp'] = $announcement['create_datetime'];
+      array_push($annArr,$obj);
+    }
+    $obj = array();
+    $obj['announcements'] = $annArr;
+    return $response->write(json_encode($obj));
   }
   catch(PDOException $e){
     print "Error!: " . $e->getMessage() . "<br/>";
