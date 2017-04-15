@@ -427,12 +427,31 @@ $app->get('/announcements/{quantity}',function($request,$response,$args){
   }
 });
 $app->post('/announcements/create',function($request,$response,$args){
-  $db = $this->$dbConn;
+  $db = $this->dbConn;
   $announcement = $request->getParsedBody();
   $title = $announcement['title'];
   $text = $announcement['text'];
   $priority = $announcement['priority'];
-  $sql = "INSERT INTO ANNOUNCEMENTS
-          ()"
+  $id = $_SESSION['username'];
+  $sql = "SELECT first_name, last_name
+          FROM STAFF
+          WHERE id = $id";
+  $q = $db->query($sql);
+  $creator_sep = $q->fetch(PDO::FETCH_ASSOC);
+  $now = date('Y-m-d H:i:s');
+  echo json_encode("hi sam");
+  $creator = $creator_sep['first_name']." ".$creator_sep['last_name'];
+  echo json_encode($creator);
+
+  // $sql2 = "INSERT INTO ANNOUNCEMENTS
+  //         (id,creator,create_datetime,title,body,priority,STAFF_id)
+  //         VALUES(NULL,$creator,$now,$title,
+  //           $text,$priority,$id)";
+  $sql2 = "INSERT INTO ANNOUNCEMENTS
+          (id,creator,create_datetime,title,body,priority,STAFF_id)
+          VALUES(NULL,'$creator','$now','$title',
+            '$text',$priority,$id)";
+  $q = $db->query($sql2);
+  return $response->write(json_encode($success));
 
 });
