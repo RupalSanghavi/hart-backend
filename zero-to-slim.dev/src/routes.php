@@ -206,6 +206,7 @@ $app->post('/login',function($request,$response,$args){
     // print_r($_SESSION);
     // print_r(count($_SESSION));
     $_SESSION["authenticated"] = true;
+    $_SESSION['username'] = $username;
     // print_r($_SESSION);
     // print_r(count($_SESSION));
     //$auth['authenticated'] = true;
@@ -424,4 +425,14 @@ $app->get('/announcements/{quantity}',function($request,$response,$args){
     print "Error!: " . $e->getMessage() . "<br/>";
     $this->notFoundHandler;
   }
+});
+$app->post('/announcements/create',function($request,$response,$args){
+  $db = $this->$dbConn;
+  $announcement = $request->getParsedBody();
+  $title = $announcement['title'];
+  $text = $announcement['text'];
+  $priority = $announcement['priority'];
+  $sql = "INSERT INTO ANNOUNCEMENTS
+          ()"
+
 });
