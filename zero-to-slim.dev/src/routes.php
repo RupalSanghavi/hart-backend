@@ -205,19 +205,20 @@ $app->post('/login',function($request,$response,$args){
     // session_destroy();
     // print_r($_SESSION);
     // print_r(count($_SESSION));
-    session_start();
-    $_SESSION["loggedIn"] = true;
+    $_SESSION["authenticated"] = true;
     // print_r($_SESSION);
     // print_r(count($_SESSION));
+    //$auth['authenticated'] = true;
+    return $response->write(json_encode($_SESSION));
 });
 $app->get('/checkauth',function($request,$response,$args){
    $auth = 0;
    if(count($_SESSION) == 0){}
-   else if($_SESSION["loggedIn"] == true){
+   else if($_SESSION["authenticated"] == true){
       $auth = 1;
     }
    else {}
-   return $response->write(json_encode($auth));
+   return $response->write(json_encode($_SESSION));
 
 });
 $app->post('/logout',function($request,$response,$args){
@@ -226,4 +227,19 @@ $app->post('/logout',function($request,$response,$args){
     $username = $data['username'];
     $password = $data['password'];
     session_destroy();
+});
+$app->delete('/faculty/delete',function($request,$response,$args){
+  try{
+      $db = $this->dbConn;
+      $data = $request->getParsedBody();
+      $id = $data['id'];
+      $sql = "DELETE FROM STAFF
+              WHERE id = '$id'";
+      $success['status'] = "success";
+      return $response->write(json_encode($success));
+    }
+    catch(PDOException $e){
+      print "Error!: " . $e->getMessage() . "<br/>";
+      $this->notFoundHandler;
+    }
 });
