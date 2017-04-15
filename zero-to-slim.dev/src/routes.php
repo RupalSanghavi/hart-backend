@@ -228,7 +228,7 @@ $app->post('/logout',function($request,$response,$args){
     $password = $data['password'];
     session_destroy();
 });
-$app->delete('/faculty/delete',function($request,$response,$args){
+$app->post('/faculty/delete',function($request,$response,$args){
   try{
       $db = $this->dbConn;
       $data = $request->getParsedBody();
@@ -242,4 +242,89 @@ $app->delete('/faculty/delete',function($request,$response,$args){
       print "Error!: " . $e->getMessage() . "<br/>";
       $this->notFoundHandler;
     }
+});
+$app->post('/student/add',function($request,$response,$args){
+  try{
+    $db = $this->dbConn;
+    $data = $request->getParsedBody();
+    $firstName = $data["firstName"];
+    $lastName = $data["lastName"];
+    $email = $data["email"];
+    $id = $data["id"];
+    $section = $data["section"];
+    // $sql = "INSERT INTO STUDENT
+    //         (first_name,last_name,email,"
+
+  }
+  catch(PDOException $e){
+    print "Error!: " . $e->getMessage() . "<br/>";
+    $this->notFoundHandler;
+  }
+});
+$app->get('/sprint/{sprint_id}',function($request,$response,$args){
+  try{
+    $db = $this->dbConn;
+    $sprint_id = $request->getAttribute('sprint_id');
+    $data = $request->getParsedBody();
+    $sql = "SELECT *
+            FROM SPRINT
+            WHERE id = '$sprint_id'";
+    $q = $db->query($sql);
+    $sprint = $q->fetchAll(PDO::FETCH_ASSOC);
+    return $response->write(json_encode($sprint));
+
+  }
+  catch(PDOException $e){
+    print "Error!: " . $e->getMessage() . "<br/>";
+    $this->notFoundHandler;
+  }
+});
+$app->get('/forms',function($request,$response,$args){
+
+});
+$app->get('/forms/team-charter/{team_id}',function($request,$response,$args){
+  $db = $this->dbConn;
+  $team_id = $request->getAttribute('team_id');
+  // $sql = "SELECT t.name, tc.*, s.*
+  //         FROM TEAM t
+  //         INNER JOIN TEAM_CHARTER tc
+  //         WHERE t.id = '$team_id'
+  //         AND tc.TEAM_id = '$team_id'
+  //         INNER JOIN STUDENT s
+  //         WHERE s.TEAM_id = '$team_id'";
+  $sql = "SELECT t.name, tc.*
+          FROM TEAM t
+          INNER JOIN TEAM_CHARTER tc
+          ON t.id = $team_id
+          WHERE tc.TEAM_id = $team_id";
+  $q = $db->query($sql);
+  $team = $q->fetch(PDO::FETCH_ASSOC);
+  $sql = "SELECT *
+          FROM STUDENT s
+	        WHERE s.TEAM_id = '$team_id'";
+  $q = $db->query($sql);
+  $students = $q->fetchAll(PDO::FETCH_ASSOC);
+  $i = 0;
+  $profiles = [];
+  echo json_encode($students);
+  // foreach($students as $student){
+  //   echo json_encode($student);
+  //   $profile = array();
+  //   $profile['name'] = $student['first_name'] + $student['last_name'];
+  //   $profile['knowledge'] = $student['knowledge'];
+  //   array_push($profiles,$profile);
+  // }
+  $obj['team_name'] = $team['name'];
+  $obj['profiles'] = $profiles;
+  $obj["ideate"] = $team['ideating'];
+
+  $obj["decision_making"] = $team['decision_making'];
+  $obj["disputes"] = $team['disputes'];
+  $obj["conflicts"] = $team['conflicts'];
+  $obj['fun'] = $team['fun'];
+  $obj['purpose'] = $team['team_purpose'];
+  $obj['stakeholders'] = $team['stakeholders'];
+  $obj['mission'] = $team['mission'];
+
+  //return $response->write(json_encode($obj));
 });
