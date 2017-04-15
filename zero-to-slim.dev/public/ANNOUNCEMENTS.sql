@@ -1,5 +1,5 @@
-insert into ANNOUNCEMENTS (title, body, create_date, priority, creator, id, STAFF_id) values ('imperdiet et', 'Quisque ut erat.', '2017-02-12', 1, 'Denise Alexander', 1, 1);
-insert into ANNOUNCEMENTS (title, body, create_date, priority, creator, id, STAFF_id) values ('dolor', 'Pellentesque viverra pede ac diam.', '2016-08-07', 2, 'Howard Mason', 2, 2);
-insert into ANNOUNCEMENTS (title, body, create_date, priority, creator, id, STAFF_id) values ('elementum nullam', 'Nulla mollis molestie lorem.', '2017-03-25', 3, 'Jennifer Reed', 3, 3);
-insert into ANNOUNCEMENTS (title, body, create_date, priority, creator, id, STAFF_id) values ('at', 'Nam tristique tortor eu pede.', '2017-02-02', 4, 'Rose Ramirez', 4, 1);
-insert into ANNOUNCEMENTS (title, body, create_date, priority, creator, id, STAFF_id) values ('curae duis faucibus', 'Maecenas ut massa quis augue luctus tincidunt.', '2016-07-31', 5, 'Beverly Ryan', 5, 2);
+insert into ANNOUNCEMENTS (title, body, create_datetime, priority, creator, id, STAFF_id) values ('cum sociis', 'Integer ac leo.', '2016-09-08 09:29:30', 1, 'David Howell', 1, 1);
+insert into ANNOUNCEMENTS (title, body, create_datetime, priority, creator, id, STAFF_id) values ('lorem', 'Ut tellus.', '2017-01-05 10:05:39', 2, 'Larry Sims', 2, 2);
+insert into ANNOUNCEMENTS (title, body, create_datetime, priority, creator, id, STAFF_id) values ('natoque penatibus', 'Duis bibendum.', '2016-11-12 23:55:19', 3, 'Kathleen Hansen', 3, 3);
+insert into ANNOUNCEMENTS (title, body, create_datetime, priority, creator, id, STAFF_id) values ('at', 'Pellentesque ultrices mattis odio.', '2017-02-09 17:22:24', 4, 'Diana Morris', 4, 1);
+insert into ANNOUNCEMENTS (title, body, create_datetime, priority, creator, id, STAFF_id) values ('ridiculus mus etiam', 'Vestibulum rutrum rutrum neque.', '2016-07-18 20:39:28', 5, 'Kathleen Mcdonald', 5, 2);

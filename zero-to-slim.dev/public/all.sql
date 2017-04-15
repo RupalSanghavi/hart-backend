@@ -11,13 +11,28 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 -- -----------------------------------------------------
 -- Schema mydb
 -- -----------------------------------------------------
-DROP SCHEMA IF EXISTS `mydb`;
 CREATE SCHEMA IF NOT EXISTS `mydb` DEFAULT CHARACTER SET utf8 ;
 USE `mydb` ;
 
 -- -----------------------------------------------------
+-- Table `mydb`.`CLASS`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `mydb`.`CLASS` ;
+
+CREATE TABLE IF NOT EXISTS `mydb`.`CLASS` (
+  `id` INT NOT NULL,
+  `year` YEAR NULL,
+  `semester` VARCHAR(45) NULL,
+  `section` VARCHAR(45) NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
 -- Table `mydb`.`TEAM`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `mydb`.`TEAM` ;
+
 CREATE TABLE IF NOT EXISTS `mydb`.`TEAM` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NULL,
@@ -37,20 +52,10 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`CLASS`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`CLASS` (
-  `id` INT NOT NULL,
-  `year` YEAR NULL,
-  `semester` VARCHAR(45) NULL,
-  `section` VARCHAR(45) NULL,
-  PRIMARY KEY (`id`))
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
 -- Table `mydb`.`SPRINT`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `mydb`.`SPRINT` ;
+
 CREATE TABLE IF NOT EXISTS `mydb`.`SPRINT` (
   `id` INT NOT NULL,
   `sprint_number` INT NULL,
@@ -73,6 +78,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `mydb`.`MBDForm`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `mydb`.`MBDForm` ;
+
 CREATE TABLE IF NOT EXISTS `mydb`.`MBDForm` (
   `id` INT NOT NULL,
   `More` VARCHAR(2000) NULL,
@@ -93,6 +100,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `mydb`.`STUDENT`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `mydb`.`STUDENT` ;
+
 CREATE TABLE IF NOT EXISTS `mydb`.`STUDENT` (
   `first_name` VARCHAR(45) NULL,
   `last_name` VARCHAR(45) NULL,
@@ -103,7 +112,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`STUDENT` (
   `skills_abilities` VARCHAR(45) NULL,
   `CLASS_id` INT NULL,
   `TEAM_id` INT NULL,
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `email` VARCHAR(255) NULL,
   `MBDForm_id` INT NULL,
   `salt` VARCHAR(250) NULL,
@@ -133,6 +142,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `mydb`.`TEAM_ROLES`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `mydb`.`TEAM_ROLES` ;
+
 CREATE TABLE IF NOT EXISTS `mydb`.`TEAM_ROLES` (
   `id` INT NOT NULL,
   `name` VARCHAR(45) NULL,
@@ -143,10 +154,11 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `mydb`.`STUDENT_ROLES`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `mydb`.`STUDENT_ROLES` ;
+
 CREATE TABLE IF NOT EXISTS `mydb`.`STUDENT_ROLES` (
   `STUDENT_id` INT NOT NULL,
   `TEAM_ROLES_id` INT NOT NULL,
-  PRIMARY KEY (`STUDENT_id`, `TEAM_ROLES_id`),
   INDEX `fk_STUDENT_ROLES_STUDENT1_idx` (`STUDENT_id` ASC),
   INDEX `fk_STUDENT_ROLES_TEAM_ROLES1_idx` (`TEAM_ROLES_id` ASC),
   CONSTRAINT `fk_STUDENT_ROLES_STUDENT1`
@@ -165,6 +177,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `mydb`.`RESOURCES`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `mydb`.`RESOURCES` ;
+
 CREATE TABLE IF NOT EXISTS `mydb`.`RESOURCES` (
   `id` INT NOT NULL,
   `link` VARCHAR(45) NULL,
@@ -177,6 +191,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `mydb`.`HLA_FOCUS`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `mydb`.`HLA_FOCUS` ;
+
 CREATE TABLE IF NOT EXISTS `mydb`.`HLA_FOCUS` (
   `focus_name` VARCHAR(45) NULL,
   `STUDENT_id` INT NOT NULL,
@@ -193,6 +209,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `mydb`.`STAFF`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `mydb`.`STAFF` ;
+
 CREATE TABLE IF NOT EXISTS `mydb`.`STAFF` (
   `id` INT NOT NULL,
   `admin` TINYINT NULL,
@@ -205,10 +223,12 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `mydb`.`ANNOUNCEMENTS`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `mydb`.`ANNOUNCEMENTS` ;
+
 CREATE TABLE IF NOT EXISTS `mydb`.`ANNOUNCEMENTS` (
   `title` VARCHAR(45) NULL,
   `body` VARCHAR(45) NULL,
-  `create_date` DATE NULL,
+  `create_datetime` DATETIME NULL,
   `priority` INT NULL,
   `creator` VARCHAR(45) NULL,
   `STAFF_id` INT NOT NULL,
@@ -226,6 +246,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `mydb`.`EVENTS`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `mydb`.`EVENTS` ;
+
 CREATE TABLE IF NOT EXISTS `mydb`.`EVENTS` (
   `id` INT NOT NULL,
   `title` VARCHAR(45) NULL,
@@ -249,6 +271,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `mydb`.`TEAM_CHARTER`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `mydb`.`TEAM_CHARTER` ;
+
 CREATE TABLE IF NOT EXISTS `mydb`.`TEAM_CHARTER` (
   `ideating` VARCHAR(2000) NULL,
   `decision_making` VARCHAR(2000) NULL,
@@ -273,6 +297,7 @@ ENGINE = InnoDB;
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
 insert into CLASS (id, year, semester, section) values (1, 2015, 'Fall', 1);
 insert into TEAM (id, name, logo, blog, charterCompleted,  TEAM_CHARTER_id, CLASS_id ) values (1, 'Aufderhar-Friesen', 'http://dummyimage.com/238x127.jpg/ff4444/ffffff', 'In est risus, auctor sed, tristique in, tempus sit amet, sem.', false, 2, 1);
 insert into TEAM (id, name, logo, blog, charterCompleted,  TEAM_CHARTER_id, CLASS_id ) values (2, 'Wolff LLC', 'http://dummyimage.com/224x107.bmp/5fa2dd/ffffff', 'Fusce congue, diam id ornare imperdiet, sapien urna pretium nisl, ut volutpat sapien arcu sed augue.', true, 1, 1);
@@ -326,12 +351,11 @@ insert into TEAM_CHARTER (id, ideating, decision_making, disputes, conflicts, fu
 insert into STAFF (id, admin, last_name, first_name) values (1, 1, 'Johnston', 'Robert');
 insert into STAFF (id, admin, last_name, first_name) values (2, 1, 'Palmer', 'Marilyn');
 insert into STAFF (id, admin, last_name, first_name) values (3, 1, 'Shaw', 'Gloria');
-insert into ANNOUNCEMENTS (title, body, create_date, priority, creator, id, STAFF_id) values ('imperdiet et', 'Quisque ut erat.', '2017-02-12', 1, 'Denise Alexander', 1, 1);
-insert into ANNOUNCEMENTS (title, body, create_date, priority, creator, id, STAFF_id) values ('dolor', 'Pellentesque viverra pede ac diam.', '2016-08-07', 2, 'Howard Mason', 2, 2);
-insert into ANNOUNCEMENTS (title, body, create_date, priority, creator, id, STAFF_id) values ('elementum nullam', 'Nulla mollis molestie lorem.', '2017-03-25', 3, 'Jennifer Reed', 3, 3);
-insert into ANNOUNCEMENTS (title, body, create_date, priority, creator, id, STAFF_id) values ('at', 'Nam tristique tortor eu pede.', '2017-02-02', 4, 'Rose Ramirez', 4, 1);
-insert into ANNOUNCEMENTS (title, body, create_date, priority, creator, id, STAFF_id) values ('curae duis faucibus', 'Maecenas ut massa quis augue luctus tincidunt.', '2016-07-31', 5, 'Beverly Ryan', 5, 2);
-insert into EVENTS (id, title, start_date, end_date, creator, description, location, STAFF_id, create_date) values (1, 'nam', '2016-02-13', '2016-11-01', 'Jerry Campbell', 'primis in faucibus orci luctus', '7 Dahle Junction', 1, '2014-10-19');
+insert into ANNOUNCEMENTS (title, body, create_datetime, priority, creator, id, STAFF_id) values ('cum sociis', 'Integer ac leo.', '2016-09-08 09:29:30', 1, 'David Howell', 1, 1);
+insert into ANNOUNCEMENTS (title, body, create_datetime, priority, creator, id, STAFF_id) values ('lorem', 'Ut tellus.', '2017-01-05 10:05:39', 2, 'Larry Sims', 2, 2);
+insert into ANNOUNCEMENTS (title, body, create_datetime, priority, creator, id, STAFF_id) values ('natoque penatibus', 'Duis bibendum.', '2016-11-12 23:55:19', 3, 'Kathleen Hansen', 3, 3);
+insert into ANNOUNCEMENTS (title, body, create_datetime, priority, creator, id, STAFF_id) values ('at', 'Pellentesque ultrices mattis odio.', '2017-02-09 17:22:24', 4, 'Diana Morris', 4, 1);
+insert into ANNOUNCEMENTS (title, body, create_datetime, priority, creator, id, STAFF_id) values ('ridiculus mus etiam', 'Vestibulum rutrum rutrum neque.', '2016-07-18 20:39:28', 5, 'Kathleen Mcdonald', 5, 2);insert into EVENTS (id, title, start_date, end_date, creator, description, location, STAFF_id, create_date) values (1, 'nam', '2016-02-13', '2016-11-01', 'Jerry Campbell', 'primis in faucibus orci luctus', '7 Dahle Junction', 1, '2014-10-19');
 insert into EVENTS (id, title, start_date, end_date, creator, description, location, STAFF_id, create_date) values (2, 'mi in', '2016-03-28', '2016-12-18', 'Karen Alexander', 'lobortis sapien sapien non mi', '81 Jana Junction', 2, '2014-11-17');
 insert into EVENTS (id, title, start_date, end_date, creator, description, location, STAFF_id, create_date) values (3, 'non lectus aliquam', '2015-08-05', '2017-03-24', 'Kelly Henry', 'mi nulla ac enim in', '2154 Duke Trail', 3, '2015-03-04');
 insert into EVENTS (id, title, start_date, end_date, creator, description, location, STAFF_id, create_date) values (4, 'erat vestibulum sed', '2015-05-26', '2017-04-02', 'Michael Watkins', 'nibh in hac habitasse platea', '50720 Cascade Parkway', 1, '2015-02-04');

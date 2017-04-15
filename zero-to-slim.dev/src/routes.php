@@ -395,3 +395,19 @@ $app->post('/forms/t_mbd/{team_id}',function($request,$response,$args){
     $this->notFoundHandler;
   }
 });
+$app->get('/announcements/{quantity}',function($request,$response,$args){
+
+  $quantity = $request->getAttribute('quantity');
+  try{
+    $db = $this->dbConn;
+    $sql = "SELECT *
+            FROM ANNOUNCEMENTS";
+    $q = $db->query($sql);
+    $announcements = $q->fetchAll(PDO::FETCH_ASSOC);
+    return $response->write(json_encode($announcements));
+  }
+  catch(PDOException $e){
+    print "Error!: " . $e->getMessage() . "<br/>";
+    $this->notFoundHandler;
+  }
+});
