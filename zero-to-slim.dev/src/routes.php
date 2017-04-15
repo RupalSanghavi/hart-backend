@@ -285,13 +285,6 @@ $app->get('/forms',function($request,$response,$args){
 $app->get('/forms/team-charter/{team_id}',function($request,$response,$args){
   $db = $this->dbConn;
   $team_id = $request->getAttribute('team_id');
-  // $sql = "SELECT t.name, tc.*, s.*
-  //         FROM TEAM t
-  //         INNER JOIN TEAM_CHARTER tc
-  //         WHERE t.id = '$team_id'
-  //         AND tc.TEAM_id = '$team_id'
-  //         INNER JOIN STUDENT s
-  //         WHERE s.TEAM_id = '$team_id'";
   $sql = "SELECT t.name, tc.*
           FROM TEAM t
           INNER JOIN TEAM_CHARTER tc
@@ -329,4 +322,36 @@ $app->get('/forms/team-charter/{team_id}',function($request,$response,$args){
   $obj['mission'] = $team['mission'];
 
   return $response->write(json_encode($obj));
+});
+
+$app->post('/forms/team-charter/{team_id}',function($request,$response,$args){
+  try{
+    $db = $this->dbConn;
+    $TEAM_id = $request->getAttribute('team_id');
+    $charter = $request->getParsedBody();
+    $ideate = $charter['ideate'];
+    $decision_making = $charter['decision_making'];
+    $disputes = $charter['disputes'];
+    $conflicts = $charter['conflicts'];
+    $fun = $charter['fun'];
+    $purpose = $charter['purpose'];
+    $stakeholders = $charter['stakeholders'];
+    $mission = $charter['mission'];
+    $sql = "UPDATE TEAM_CHARTER
+            SET ideating = '$ideate',
+            decision_making = '$decision_making',
+            disputes = '$disputes',
+            fun = '$fun',
+            team_purpose = '$purpose',
+            stakeholders = '$stakeholders',
+            mission = '$mission'
+            WHERE TEAM_id = $TEAM_id";
+    $q = $db->query($sql);
+    $success['messages'] = 'success!!!';
+    return $response->write(json_encode($success));
+  }
+  catch(PDOException $e){
+    print "Error!: " . $e->getMessage() . "<br/>";
+    $this->notFoundHandler;
+  }
 });
