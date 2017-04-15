@@ -355,3 +355,52 @@ $app->post('/forms/team-charter/{team_id}',function($request,$response,$args){
     $this->notFoundHandler;
   }
 });
+$app->get('/forms/t_mbd/{team_id}',function($request,$response,$args){
+  try{
+    $db = $this->dbConn;
+    $team_id = $request->getAttribute('team_id');
+    $bod = $request->getParsedBody();
+    $sprint_num = $bod['sprint_num'];
+    $sql = "SELECT *
+            FROM MBDForm
+            WHERE SPRINT_id = $sprint_num";
+    $q = $db->query($sql);
+    $mbd = $q->fetch(PDO::FETCH_ASSOC);
+    return $response->write(json_encode());
+  }
+  catch(PDOException $e){
+    print "Error!: " . $e->getMessage() . "<br/>";
+    $this->notFoundHandler;
+  }
+
+});
+$app->post('/forms/t_mbd/{team_id}',function($request,$response,$args){
+
+  try{
+      $db = $this->dbConn;
+      $bod = $request->getParsedBody();
+      echo json_encode($bod);
+      $sprint_num = $bod['sprint_num'];
+      $more = $bod['more'];
+      $better = $bod['better'];
+      $different = $bod['different'];
+      $sql = "UPDATE MBDForm
+              SET More = '$more',
+              Better = '$better',
+              Different = '$different'
+              WHERE SPRINT_id = $sprint_num";
+      $q = $db->query($sql);
+
+      $sql = "SELECT Better
+              FROM MBDForm
+              WHERE SPRINT_id = 1";
+      $q = $db->query($sql);
+      $check = $q->fetchAll(PDO::FETCH_ASSOC);
+      echo json_encode($check);
+
+    }
+  catch(PDOException $e){
+    print "Error!: " . $e->getMessage() . "<br/>";
+    $this->notFoundHandler;
+  }
+});
