@@ -379,7 +379,6 @@ $app->post('/forms/t_mbd/{team_id}',function($request,$response,$args){
   try{
       $db = $this->dbConn;
       $bod = $request->getParsedBody();
-      echo json_encode($bod);
       $sprint_num = $bod['sprint_num'];
       $more = $bod['more'];
       $better = $bod['better'];
@@ -390,14 +389,6 @@ $app->post('/forms/t_mbd/{team_id}',function($request,$response,$args){
               Different = '$different'
               WHERE SPRINT_id = $sprint_num";
       $q = $db->query($sql);
-
-      $sql = "SELECT Better
-              FROM MBDForm
-              WHERE SPRINT_id = 1";
-      $q = $db->query($sql);
-      $check = $q->fetchAll(PDO::FETCH_ASSOC);
-      echo json_encode($check);
-
     }
   catch(PDOException $e){
     print "Error!: " . $e->getMessage() . "<br/>";
