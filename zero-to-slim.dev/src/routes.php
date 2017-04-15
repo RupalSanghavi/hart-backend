@@ -306,14 +306,16 @@ $app->get('/forms/team-charter/{team_id}',function($request,$response,$args){
   $students = $q->fetchAll(PDO::FETCH_ASSOC);
   $i = 0;
   $profiles = [];
-  echo json_encode($students);
-  // foreach($students as $student){
-  //   echo json_encode($student);
-  //   $profile = array();
-  //   $profile['name'] = $student['first_name'] + $student['last_name'];
-  //   $profile['knowledge'] = $student['knowledge'];
-  //   array_push($profiles,$profile);
-  // }
+  foreach($students as $student){
+    $profile = array();
+    $profile['name'] = $student['first_name']." ".$student['last_name'];
+    $profile['knowledge'] = $student['knowledge'];
+    $profile['skills_abilities'] = $student['skills_abilities'];
+    $profile['major'] = $student['major'];
+    $profile['about'] = $student['info'];
+    //comm_tools?
+    array_push($profiles,$profile);
+  }
   $obj['team_name'] = $team['name'];
   $obj['profiles'] = $profiles;
   $obj["ideate"] = $team['ideating'];
@@ -326,5 +328,5 @@ $app->get('/forms/team-charter/{team_id}',function($request,$response,$args){
   $obj['stakeholders'] = $team['stakeholders'];
   $obj['mission'] = $team['mission'];
 
-  //return $response->write(json_encode($obj));
+  return $response->write(json_encode($obj));
 });
