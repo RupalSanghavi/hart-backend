@@ -234,8 +234,18 @@ $app->post('/faculty/delete',function($request,$response,$args){
       $db = $this->dbConn;
       $data = $request->getParsedBody();
       $id = $data['id'];
-      $sql = "DELETE FROM STAFF
+      $del_events = "DELETE
+                      FROM EVENTS
+                      WHERE STAFF_id = '$id'";
+      $sql = "DELETE
+              FROM STAFF
               WHERE id = '$id'";
+      $sql2 = "DELETE
+              FROM ANNOUNCEMENTS
+              WHERE ANNOUNCEMENTS.STAFF_id = '$id'";
+      $q = $db->query($del_events);
+      $q = $db->query($sql) ;
+      $q = $db->query($sql2);
       $success['status'] = "success";
       return $response->write(json_encode($success));
     }
@@ -453,5 +463,44 @@ $app->post('/announcements/create',function($request,$response,$args){
             '$text',$priority,$id)";
   $q = $db->query($sql2);
   return $response->write(json_encode($success));
+
+});
+$app->get('/faculty',function($request,$response,$args){
+    $db = $this->dbConn;
+    $sql = "SELECT *
+            FROM STAFF
+            WHERE admin = 0";
+    $q = $db->query($sql);
+    $obj = array();
+    $faculty = $q->fetchAll(PDO::FETCH_ASSOC);
+    $faculty_adj = array();
+    foreach($faculty as $person){
+      $obj = array();
+      $obj['firstName'] = $person['first_name'];
+      $obj['lastName'] = $person['last_name'];
+      $obj['id'] = $person['id'];
+      array_push($faculty_adj,$obj);
+    }
+    $obj['faculty'] = $faculty_adj;
+    $sql = "SELECT *
+            FROM STAFF
+            WHERE admin = 1";
+    $q = $db->query($sql);
+    $admin = $q->fetchAll(PDO::FETCH_ASSOC);
+    $admin_adj = array();
+    foreach($admin as $person){
+      $obj2 = array();
+      $obj2['firstName'] = $person['first_name'];
+      $obj2['lastName'] = $person['last_name'];
+      $obj2['id'] = $person['id'];
+      array_push($admin_adj,$obj2);
+    }
+    $obj['admin'] = $admin_adj;
+    // $obj = array();
+    // $obj['faculty'],$faculty_arr);
+    // array_push($obj,$admin_arr);
+    // // $obj[0]= $faculty_arr;
+    // // $obj[1]= $admin_arr;
+    return $response->write(json_encode($obj));
 
 });
