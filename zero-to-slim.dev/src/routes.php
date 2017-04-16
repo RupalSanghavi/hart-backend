@@ -816,3 +816,27 @@ $app->get('/sprints/{sprint_number}',function($request,$response,$args){
   return $response->write(json_encode($obj));
 
 });
+$app->post('/sprint',function($request,$response,$args){
+  $db = $this->dbConn;
+  $sprint = $request->getParsedBody();
+  $info = $sprint['info'];
+  $sprint_master = $sprint['sprint_master'];
+  $scribe = $sprint['scribe'];
+  $start_date = $sprint['start_date'];
+  $end_date = $sprint['end_date'];
+  $team_name = $sprint['team_name'];
+  $sql = "SELECT id
+          FROM TEAM
+          WHERE name = '$team_name'";
+  $q = $db->query($sql);
+  $team_id_obj = $q->fetch(PDO::FETCH_ASSOC);
+  $team_id = $team_id_obj['id'];
+  $sql = "INSERT INTO SPRINT
+          (info, scrum_master, scribe, start_date, end_date,TEAM_id)
+          VALUES ('$info','$sprint_master','$scribe','$start_date',
+          '$end_date','$team_id')";
+  $q = $db->query($sql);
+  $status['status'] = 'success';
+  return $response->write(json_encode($status));
+
+});
