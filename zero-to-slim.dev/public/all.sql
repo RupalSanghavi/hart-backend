@@ -258,11 +258,18 @@ CREATE TABLE IF NOT EXISTS `mydb`.`EVENTS` (
   `description` VARCHAR(45) NULL,
   `location` VARCHAR(45) NULL,
   `STAFF_id` INT NOT NULL,
+  `TEAM_id` INT NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_EVENTS_STAFF1_idx` (`STAFF_id` ASC),
+  INDEX `fk_EVENTS_TEAM1_idx` (`TEAM_id` ASC),
   CONSTRAINT `fk_EVENTS_STAFF1`
     FOREIGN KEY (`STAFF_id`)
     REFERENCES `mydb`.`STAFF` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_EVENTS_TEAM1`
+    FOREIGN KEY (`TEAM_id`)
+    REFERENCES `mydb`.`TEAM` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -376,12 +383,12 @@ insert into ANNOUNCEMENTS (title, body, create_datetime, priority, creator, id, 
 insert into ANNOUNCEMENTS (title, body, create_datetime, priority, creator, id, STAFF_id) values ('natoque penatibus', 'Duis bibendum.', '2016-11-12 23:55:19', 3, 'Kathleen Hansen', 3, 3);
 insert into ANNOUNCEMENTS (title, body, create_datetime, priority, creator, id, STAFF_id) values ('at', 'Pellentesque ultrices mattis odio.', '2017-02-09 17:22:24', 4, 'Diana Morris', 4, 1);
 insert into ANNOUNCEMENTS (title, body, create_datetime, priority, creator, id, STAFF_id) values ('ridiculus mus etiam', 'Vestibulum rutrum rutrum neque.', '2016-07-18 20:39:28', 5, 'Kathleen Mcdonald', 5, 2);insert into EVENTS (id, title, start_date, end_date, creator, description, location, STAFF_id, create_date) values (1, 'nam', '2016-02-13', '2016-11-01', 'Jerry Campbell', 'primis in faucibus orci luctus', '7 Dahle Junction', 1, '2014-10-19');
-insert into EVENTS (id, title, start_date, end_date, creator, description, location, STAFF_id, create_date) values (2, 'mi in', '2016-03-28', '2016-12-18', 'Karen Alexander', 'lobortis sapien sapien non mi', '81 Jana Junction', 2, '2014-11-17');
-insert into EVENTS (id, title, start_date, end_date, creator, description, location, STAFF_id, create_date) values (3, 'non lectus aliquam', '2015-08-05', '2017-03-24', 'Kelly Henry', 'mi nulla ac enim in', '2154 Duke Trail', 3, '2015-03-04');
-insert into EVENTS (id, title, start_date, end_date, creator, description, location, STAFF_id, create_date) values (4, 'erat vestibulum sed', '2015-05-26', '2017-04-02', 'Michael Watkins', 'nibh in hac habitasse platea', '50720 Cascade Parkway', 1, '2015-02-04');
-insert into EVENTS (id, title, start_date, end_date, creator, description, location, STAFF_id, create_date) values (5, 'in tempus sit', '2015-10-21', '2016-06-07', 'Julie Adams', 'dui vel sem sed sagittis', '4742 Golf View Center', 2, '2014-08-24');
-insert into EVENTS (id, title, start_date, end_date, creator, description, location, STAFF_id, create_date) values (6, 'odio cras', '2015-07-21', '2016-06-02', 'Diana Parker', 'orci luctus et ultrices posuere', '74 School Avenue', 3, '2015-03-06');
-insert into RESOURCES (id, link, name, category) values (1, 'www.github.com', 'Github', 'Source Control');
+insert into EVENTS (id, title, start_date, end_date, creator, description, location, STAFF_id, create_date, TEAM_id) values (1, 'blandit', '2015-05-31', '2016-12-01', 'Eugene Arnold', 'luctus et ultrices posuere cubilia', '19 Morning Lane', 1, '2015-02-26', '1');
+insert into EVENTS (id, title, start_date, end_date, creator, description, location, STAFF_id, create_date, TEAM_id) values (2, 'pretium quis lectus', '2016-02-02', '2016-04-28', 'Robert Cole', 'montes nascetur ridiculus mus vivamus', '78 Sage Junction', 2, '2014-07-09', '2');
+insert into EVENTS (id, title, start_date, end_date, creator, description, location, STAFF_id, create_date, TEAM_id) values (3, 'justo eu massa', '2015-11-01', '2017-02-07', 'Mildred Rose', 'diam in magna bibendum imperdiet', '18 Declaration Way', 3, '2014-08-13', '');
+insert into EVENTS (id, title, start_date, end_date, creator, description, location, STAFF_id, create_date, TEAM_id) values (4, 'potenti', '2015-12-16', '2016-05-28', 'Alan Schmidt', 'in ante vestibulum ante ipsum', '84 Lindbergh Terrace', 1, '2014-07-04', '1');
+insert into EVENTS (id, title, start_date, end_date, creator, description, location, STAFF_id, create_date, TEAM_id) values (5, 'tortor', '2015-05-11', '2016-06-12', 'Christina Robinson', 'ligula nec sem duis aliquam', '9118 Old Shore Point', 2, '2014-07-27', '2');
+insert into EVENTS (id, title, start_date, end_date, creator, description, location, STAFF_id, create_date, TEAM_id) values (6, 'ante', '2015-04-27', '2016-05-19', 'Deborah Rodriguez', 'quam sapien varius ut blandit', '33 Katie Terrace', 3, '2014-05-20', '');insert into RESOURCES (id, link, name, category) values (1, 'www.github.com', 'Github', 'Source Control');
 insert into RESOURCES (id, link, name, category) values (2, 'www.asana.com', 'Asana', 'Project Management');
 insert into RESOURCES (id, link, name, category) values (3, 'www.jira.com', 'Jira', 'Project Management');
 insert into TEAM_ROLES (id, name) values (1, 'Executive');
