@@ -641,3 +641,21 @@ $app->get('/calendar/{month}/{team_name}/{event_id}',function($request,$response
   $event_adj['event_creator'] = $event['creator'];
   echo json_encode($event_adj);
 });
+$app->get('/resources',function($request,$response,$args){
+  $db = $this->dbConn;
+  $sql = "SELECT DISTINCT(category)
+          FROM RESOURCES";
+  $q = $db->query($sql);
+  $categories = $q->fetchAll(PDO::FETCH_ASSOC);
+  $obj_toreturn = array();
+  foreach($categories as $category_obj){
+    $category = $category_obj['category'];
+    $sql = "SELECT *
+            FROM RESOURCES
+            WHERE category = '$category'";
+    $q = $db->query($sql);
+    $resources = $q->fetchAll(PDO::FETCH_ASSOC);
+    $obj_toreturn[$category] = $resources;
+  }
+  echo json_encode($obj_toreturn);
+});
