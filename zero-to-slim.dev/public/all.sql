@@ -1,3 +1,4 @@
+-- MySQL Workbench Forward Engineering
 
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
@@ -293,9 +294,29 @@ CREATE TABLE IF NOT EXISTS `mydb`.`TEAM_CHARTER` (
 ENGINE = InnoDB;
 
 
+-- -----------------------------------------------------
+-- Table `mydb`.`TOOLS`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `mydb`.`TOOLS` ;
+
+CREATE TABLE IF NOT EXISTS `mydb`.`TOOLS` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `comm_tool` VARCHAR(45) NULL,
+  `STUDENT_id` INT NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_TOOLS_STUDENT1_idx` (`STUDENT_id` ASC),
+  CONSTRAINT `fk_TOOLS_STUDENT1`
+    FOREIGN KEY (`STUDENT_id`)
+    REFERENCES `mydb`.`STUDENT` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
 
 insert into CLASS (id, year, semester, section) values (1, 2015, 'Fall', 1);
 insert into TEAM (id, name, logo, blog, charterCompleted,  TEAM_CHARTER_id, CLASS_id ) values (1, 'Aufderhar-Friesen', 'http://dummyimage.com/238x127.jpg/ff4444/ffffff', 'In est risus, auctor sed, tristique in, tempus sit amet, sem.', false, 2, 1);
