@@ -127,7 +127,6 @@ $app->post('/team', function($request,$response,$args){
               WHERE id = '$member'";
       $db->query($sql);
     }
-    echo "SUCCESS";
 
 });
 $app->get('/team/{team_id}', function($request,$response,$args){
@@ -647,7 +646,7 @@ $app->get('/calendar/{month}/{team_id}',function($request,$response,$args){
     $event_adj['event_creator'] = $event['creator'];
     array_push($events_adj,$event_adj);
   }
-  echo json_encode($events_adj);
+  return $response->write(json_encode($events_adj));
 });
 $app->get('/calendar/{month}/{team_name}/{event_id}',function($request,$response,$args){
   $db = $this->dbConn;
@@ -664,7 +663,7 @@ $app->get('/calendar/{month}/{team_name}/{event_id}',function($request,$response
   $event_adj['event_description'] = $event['description'];
   $event_adj['event_createdate'] = $event['create_date'];
   $event_adj['event_creator'] = $event['creator'];
-  echo json_encode($event_adj);
+  return $response->write(json_encode($event_adj));
 });
 $app->get('/resources',function($request,$response,$args){
   $db = $this->dbConn;
@@ -843,7 +842,6 @@ $app->put('/sprint',function($request,$response,$args){
   $arr = $request->getParsedBody();
   $info = $arr['info'];
   $id = $arr['id'];
-  echo "hi";
   $end_date = $arr['date'];
   $sql = "UPDATE SPRINT
           SET info = '$info',
