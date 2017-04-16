@@ -774,9 +774,9 @@ $app->put('/profilepic',function($request,$response,$args){
   return $response->write(json_encode($image_obj));
 
 });
-$app->get('/sprints/{sprint_number}',function($request,$response,$args){
+$app->get('/sprints/{quantity}',function($request,$response,$args){
   $db = $this->dbConn;
-  $quantity = $request->getAttribute('sprint_number');
+  $quantity = $request->getAttribute('quantity');
   $email = $_SESSION['username'];
   $sql = "SELECT t.id
           FROM STUDENT s
@@ -803,7 +803,7 @@ $app->get('/sprints/{sprint_number}',function($request,$response,$args){
   $team_name = $q->fetch(PDO::FETCH_ASSOC);
   foreach($sprints as $sprint){
     $sprint_adj = array();
-    $sprint_adj['number'] = $sprint['sprint_number'];
+    $sprint_adj['id'] = $sprint['id'];
     $sprint_adj['info'] = $sprint['info'];
     $sprint_adj['date'] = $sprint['start_date'];
     $sprint_adj['team_name'] = "bob";
@@ -816,6 +816,7 @@ $app->get('/sprints/{sprint_number}',function($request,$response,$args){
   return $response->write(json_encode($obj));
 
 });
+
 $app->post('/sprint',function($request,$response,$args){
   $db = $this->dbConn;
   $sprint = $request->getParsedBody();
