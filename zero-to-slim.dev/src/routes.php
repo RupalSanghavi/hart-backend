@@ -311,12 +311,25 @@ $app->get('/forms/team-charter/{team_id}',function($request,$response,$args){
   $i = 0;
   $profiles = [];
   foreach($students as $student){
+    $id = $student['id'];
+    $sql = "SELECT *
+            FROM TOOLS t
+            WHERE t.STUDENT_id = '$id'";
+    $q = $db->query($sql);
+    $tools_rows = $q->fetchAll(PDO::FETCH_ASSOC);
+    // echo json_encode($tools_rows);
+    $comm_tools = array();
+    foreach($tools_rows as $row){
+      $comm_tool = $row['comm_tool'];
+      array_push($comm_tools,$comm_tool);
+    }
     $profile = array();
     $profile['name'] = $student['first_name']." ".$student['last_name'];
     $profile['knowledge'] = $student['knowledge'];
     $profile['skills_abilities'] = $student['skills_abilities'];
     $profile['major'] = $student['major'];
     $profile['about'] = $student['info'];
+    $profile['comm_tools'] = $comm_tools;
     //comm_tools?
     array_push($profiles,$profile);
   }

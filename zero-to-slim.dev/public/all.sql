@@ -417,7 +417,7 @@ insert into STUDENT_ROLES (STUDENT_id, TEAM_ROLES_id) values (1, 8);
 insert into STUDENT_ROLES (STUDENT_id, TEAM_ROLES_id) values (6, 2);
 insert into STUDENT_ROLES (STUDENT_id, TEAM_ROLES_id) values (10, 2);
 insert into STUDENT_ROLES (STUDENT_id, TEAM_ROLES_id) values (6, 7);
-  insert into STUDENT_ROLES (STUDENT_id, TEAM_ROLES_id) values (7, 1);
+insert into STUDENT_ROLES (STUDENT_id, TEAM_ROLES_id) values (7, 1);
 
 insert into TOOLS (id, comm_tool, STUDENT_id) values (1, 'Github', 1);
 insert into TOOLS (id, comm_tool, STUDENT_id) values (2, 'Asana', 2);
