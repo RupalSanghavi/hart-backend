@@ -583,5 +583,19 @@ $app->post('/calendar/{team_id}',function($request,$response,$args){
           VALUES('$title','$startdate','$enddate','$location','$description'
           ,'$creator','$created_date','$id')";
   $q = $db->query($sql);
-  echo $sql;
+  $sql = "SELECT *
+          FROM EVENTS
+          ORDER BY id DESC
+          LIMIT 1";
+  $q = $db->query($sql);
+  $event = $q->fetch(PDO::FETCH_ASSOC);
+  $event_adj['id'] = $event['id'];
+  $event_adj['title'] = $event['title'];
+  $event_adj['startdate'] = $event['start_date'];
+  $event_adj['enddate'] = $event['end_date'];
+  $event_adj['location'] = $event['location'];
+  $event_adj['description'] = $event['description'];
+  $event_adj['creator'] = $event['creator'];
+  $event_adj['created_date'] = $event['create_date'];
+  return $response->write(json_encode($event_adj));
 });
