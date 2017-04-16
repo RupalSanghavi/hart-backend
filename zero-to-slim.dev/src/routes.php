@@ -599,3 +599,28 @@ $app->post('/calendar/{team_id}',function($request,$response,$args){
   $event_adj['created_date'] = $event['create_date'];
   return $response->write(json_encode($event_adj));
 });
+$app->get('/calendar/{month}/{team_id}',function($request,$response,$args){
+  $db = $this->dbConn;
+  $month = $request->getAttribute('month');
+  $team_id = $request->getAttribute('team_id');
+  $sql = "SELECT *
+          FROM EVENTS
+          WHERE TEAM_id = '$team_id'
+          AND MONTH(start_date) = '$month'";
+  $q = $db->query($sql);
+  $events = $q->fetchAll(PDO::FETCH_ASSOC);
+  $events_adj = array();
+  foreach($events as $event){
+    $event_adj = array();
+    $event_adj['event_id'] = $event['id'];
+    $event_adj['event_title'] = $event['title'];
+    $event_adj['event_start_date'] = $event['start_date'];
+    $event_adj['event_end_date'] = $event['end_date'];
+    $event_adj['event_location'] = $event['location'];
+    $event_adj['event_description'] = $event['description'];
+    $event_adj['event_create_date'] = $event['create_date'];
+    $event_adj['event_creator'] = $event['creator'];
+    array_push($events_adj,$event_adj);
+  }
+  echo json_encode($events_adj);
+});
