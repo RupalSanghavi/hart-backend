@@ -379,18 +379,20 @@ $app->post('/forms/team-charter/{team_id}',function($request,$response,$args){
     $this->notFoundHandler;
   }
 });
-$app->get('/forms/t_mbd/{team_id}',function($request,$response,$args){
+$app->get('/forms/t_mbd/{team_id}/{sprint_num}',function($request,$response,$args){
   try{
     $db = $this->dbConn;
     $team_id = $request->getAttribute('team_id');
-    $bod = $request->getParsedBody();
-    $sprint_num = $bod['sprint_num'];
+    $sprint_num = $request->getAttribute('sprint_num');
     $sql = "SELECT *
             FROM MBDForm
             WHERE SPRINT_id = $sprint_num";
     $q = $db->query($sql);
     $mbd = $q->fetch(PDO::FETCH_ASSOC);
-    return $response->write(json_encode());
+    $mbd_adj['more'] = $mbd['More'];
+    $mbd_adj['better'] = $mbd['Better'];
+    $mbd_adj['different'] = $mbd['Different'];
+    return $response->write(json_encode($mbd_adj));
   }
   catch(PDOException $e){
     print "Error!: " . $e->getMessage() . "<br/>";
@@ -462,9 +464,7 @@ $app->post('/announcements/create',function($request,$response,$args){
   $q = $db->query($sql);
   $creator_sep = $q->fetch(PDO::FETCH_ASSOC);
   $now = date('Y-m-d H:i:s');
-  echo json_encode("hi sam");
   $creator = $creator_sep['first_name']." ".$creator_sep['last_name'];
-  echo json_encode($creator);
 
   // $sql2 = "INSERT INTO ANNOUNCEMENTS
   //         (id,creator,create_datetime,title,body,priority,STAFF_id)
@@ -475,7 +475,20 @@ $app->post('/announcements/create',function($request,$response,$args){
           VALUES(NULL,'$creator','$now','$title',
             '$text',$priority,$id)";
   $q = $db->query($sql2);
-  return $response->write(json_encode($success));
+  $sql = "SELECT *
+          FROM ANNOUNCEMENTS
+          ORDER BY id DESC
+          LIMIT 1";
+  $q = $db->query($sql);
+  $announcement = $q->fetch(PDO::FETCH_ASSOC);
+  $return = array();
+  $return['id'] = $announcement['id'];
+  $return['creator'] = $announcement['creator'];
+  $return['timestamp'] = $announcement['create_datetime'];
+  $return['title'] = $announcement['title'];
+  $return['text'] = $announcement['body'];
+  $return['priority'] = $announcement['priority'];
+  return $response->write(json_encode($return));
 
 });
 $app->get('/faculty',function($request,$response,$args){
