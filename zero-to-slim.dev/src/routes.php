@@ -554,5 +554,15 @@ $app->get('/calendar/{team_id}',function($request,$response,$args){
             WHERE TEAM_id = '$id'";
     $q = $db->query($sql);
     $events = $q->fetchAll(PDO::FETCH_ASSOC);
-    echo $events;
+    $events_adj = array();
+    foreach($events as $event){
+      $event_adj = array();
+      $event_adj['title'] = $event['title'];
+      $event_adj['startdate'] = $event['start_date'];
+      $event_adj['id'] = $event['id'];
+      array_push($events_adj, $event_adj);
+    }
+
+    $obj['Events'] = $events_adj;
+    echo json_encode($obj);
   });
