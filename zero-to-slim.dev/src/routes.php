@@ -659,3 +659,39 @@ $app->get('/resources',function($request,$response,$args){
   }
   echo json_encode($obj_toreturn);
 });
+$app->post('/resources',function($request,$response,$args){
+  $db = $this->dbConn;
+  $resource = $request->getParsedBody();
+  $name = $resource['name'];
+  $link = $resource['link'];
+  $category = $resource['category'];
+  $sql = "INSERT INTO RESOURCES
+          (name,link,category)
+          VALUES ('$name','$link','$category')";
+  $q = $db->query($sql);
+  $sql = "SELECT *
+          FROM RESOURCES
+          ORDER BY id DESC
+          LIMIT 1";
+  $q = $db->query($sql);
+  $resource_last_created = $q->fetch(PDO::FETCH_ASSOC);
+  return $response->write(json_encode($resource_last_created));
+});
+$app->put('/resources',function($request,$response,$args){
+  $db = $this->dbConn;
+  // $arr = (array) $request->getAttribute("token");
+  $resource = $request->getParsedBody();
+
+  $id = $resource['id'];
+  $name = $resource['name'];
+  $link = $resource['link'];
+  $category = $resource['category'];
+  $sql = "UPDATE RESOURCES
+          SET name = '$name',
+          link = '$link',
+          category = '$category'
+          WHERE id = '$id'";
+  $q = $db->query($sql);
+  $status['status'] = "success";
+  return $response->write(json_encode($status));
+});
