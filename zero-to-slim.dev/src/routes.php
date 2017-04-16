@@ -624,3 +624,20 @@ $app->get('/calendar/{month}/{team_id}',function($request,$response,$args){
   }
   echo json_encode($events_adj);
 });
+$app->get('/calendar/{month}/{team_name}/{event_id}',function($request,$response,$args){
+  $db = $this->dbConn;
+  $month = $request->getAttribute('month');
+  $team_name = $request->getAttribute('team_name');
+  $event_id = $request->getAttribute('event_id');
+  $sql = "SELECT *
+          FROM EVENTS
+          WHERE id = '$event_id'";
+  $q = $db->query($sql);
+  $event = $q->fetch(PDO::FETCH_ASSOC);
+  $event_adj['event_id'] = $event['id'];
+  $event_adj['event_location'] = $event['location'];
+  $event_adj['event_description'] = $event['description'];
+  $event_adj['event_createdate'] = $event['create_date'];
+  $event_adj['event_creator'] = $event['creator'];
+  echo json_encode($event_adj);
+});
