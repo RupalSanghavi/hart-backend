@@ -504,3 +504,19 @@ $app->get('/faculty',function($request,$response,$args){
     return $response->write(json_encode($obj));
 
 });
+$app->post('/students/delete',function($request,$response,$args){
+  $db = $this->dbConn;
+  $arr = $request->getParsedBody();
+  $id = $arr['id'];
+  $sql3 = "DELETE FROM STUDENT_ROLES
+           WHERE STUDENT_id = '$id'";
+  $sql2 = "DELETE FROM HLA_FOCUS
+           WHERE STUDENT_id = '$id'";
+  $sql = "DELETE FROM STUDENT
+          WHERE id = '$id'";
+  $q = $db->query($sql3);
+  $q = $db->query($sql2);
+  $q = $db->query($sql);
+  $success['status'] = "success";
+  return $response->write(json_encode($success));
+});
