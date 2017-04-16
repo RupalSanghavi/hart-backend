@@ -257,44 +257,66 @@ $app->post('/faculty/delete',function($request,$response,$args){
       $this->notFoundHandler;
     }
 });
-$app->post('/student/add',function($request,$response,$args){
-  try{
-    $db = $this->dbConn;
-    $data = $request->getParsedBody();
-    $firstName = $data["firstName"];
-    $lastName = $data["lastName"];
-    $email = $data["email"];
-    $id = $data["id"];
-    $section = $data["section"];
-    // $sql = "INSERT INTO STUDENT
-    //         (first_name,last_name,email,"
+// $app->post('/student/add',function($request,$response,$args){
+//   try{
+//     $db = $this->dbConn;
+//     $data = $request->getParsedBody();
+//     $firstName = $data["firstName"];
+//     $lastName = $data["lastName"];
+//     $email = $data["email"];
+//     $id = $data["id"];
+//     $section = $data["section"];
+//     $sql = "INSERT INTO STUDENT
+//             (first_name,last_name,email,"
+//
+//   }
+//   catch(PDOException $e){
+//     print "Error!: " . $e->getMessage() . "<br/>";
+//     $this->notFoundHandler;
+//   }
+// });
 
-  }
-  catch(PDOException $e){
-    print "Error!: " . $e->getMessage() . "<br/>";
-    $this->notFoundHandler;
-  }
-});
-$app->get('/sprint/{sprint_id}',function($request,$response,$args){
-  try{
-    $db = $this->dbConn;
-    $sprint_id = $request->getAttribute('sprint_id');
-    $data = $request->getParsedBody();
-    $sql = "SELECT *
-            FROM SPRINT
-            WHERE id = '$sprint_id'";
-    $q = $db->query($sql);
-    $sprint = $q->fetchAll(PDO::FETCH_ASSOC);
-    return $response->write(json_encode($sprint));
-
-  }
-  catch(PDOException $e){
-    print "Error!: " . $e->getMessage() . "<br/>";
-    $this->notFoundHandler;
-  }
-});
 $app->get('/forms',function($request,$response,$args){
-
+  $db = $this->dbConn;
+  $email = $_SESSION['username'];
+  $sql = "SELECT t.id
+          FROM STUDENT s
+          INNER JOIN TEAM t
+          WHERE s.email = '$email'
+          AND t.id = s.TEAM_id";
+  $q = $db->query($sql);
+  $team_id_obj = $q->fetch(PDO::FETCH_ASSOC);
+  $team_id = $team_id_obj['id'];
+  $sql = "SELECT COUNT(*)
+          FROM TEAM t
+          INNER JOIN TEAM_CHARTER tc
+          WHERE t.id = '$team_id'
+          AND tc.TEAM_id = '$team_id'";
+  $q = $db->query($sql);
+  $count_obj = $q->fetch(PDO::FETCH_ASSOC);
+  $count = $count_obj['COUNT(*)'];
+  $to_return = array();
+  if($count > 0){
+    $to_return['team_charter'] = true;
+  }
+  else{
+    $to_return['team_charter'] = false;
+  }
+  $now = date('Y-m-d');
+  $sql = "SELECT COUNT(*)
+          FROM SPRINT s
+          WHERE s.TEAM_id = '$team_id'
+          AND '$now' between s.start_date and s.end_date";
+  $q = $db->query($sql);
+  $countMBD_obj = $q->fetch(PDO::FETCH_ASSOC);
+  $countMBD = $countMBD_obj['COUNT(*)'];
+  if($countMBD > 0){
+    $to_return['mbd'] = true;
+  }
+  else{
+    $to_return['mbd'] = false;
+  }
+  return $response->write(json_encode($to_return));
 });
 $app->get('/forms/team-charter/{team_id}',function($request,$response,$args){
   $db = $this->dbConn;
@@ -660,7 +682,7 @@ $app->get('/resources',function($request,$response,$args){
     $resources = $q->fetchAll(PDO::FETCH_ASSOC);
     $obj_toreturn[$category] = $resources;
   }
-  echo json_encode($obj_toreturn);
+  return $response->write(json_encode($obj_toreturn));
 });
 $app->post('/resources',function($request,$response,$args){
   $db = $this->dbConn;
@@ -816,7 +838,19 @@ $app->get('/sprints/{quantity}',function($request,$response,$args){
   return $response->write(json_encode($obj));
 
 });
-
+$app->put('/sprint',function($request,$response,$args){
+  $db = $this->dbConn;
+  $arr = $request->getParsedBody();
+  $info = $arr['info'];
+  $id = $arr['id'];
+  echo "hi";
+  $end_date = $arr['date'];
+  $sql = "UPDATE SPRINT
+          SET info = '$info',
+          end_date = '$end_date'
+          WHERE id = '$id'";
+  $q = $db->query($sql);
+});
 $app->post('/sprint',function($request,$response,$args){
   $db = $this->dbConn;
   $sprint = $request->getParsedBody();
