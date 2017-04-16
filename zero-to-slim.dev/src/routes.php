@@ -564,5 +564,24 @@ $app->get('/calendar/{team_id}',function($request,$response,$args){
     }
 
     $obj['Events'] = $events_adj;
-    echo json_encode($obj);
+    return $response->write(json_encode($obj));
   });
+$app->post('/calendar/{team_id}',function($request,$response,$args){
+  $db = $this->dbConn;
+  $id = $request->getAttribute('team_id');
+  $event = $request->getParsedBody();
+  $title = $event['title'];
+  $startdate = $event['startdate'];
+  $enddate = $event['enddate'];
+  $location = $event['location'];
+  $description = $event['description'];
+  $creator = $event['creator'];
+  $created_date = $event['created_date'];
+  $sql = "INSERT INTO EVENTS
+          (title,start_date,end_date,location,description,creator,create_date
+          ,TEAM_id)
+          VALUES('$title','$startdate','$enddate','$location','$description'
+          ,'$creator','$created_date','$id')";
+  $q = $db->query($sql);
+  echo $sql;
+});

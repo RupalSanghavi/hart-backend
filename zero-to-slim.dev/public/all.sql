@@ -257,7 +257,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`EVENTS` (
   `creator` VARCHAR(45) NULL,
   `description` VARCHAR(45) NULL,
   `location` VARCHAR(45) NULL,
-  `STAFF_id` INT NOT NULL,
+  `STAFF_id` INT NULL,
   `TEAM_id` INT NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_EVENTS_STAFF1_idx` (`STAFF_id` ASC),
@@ -323,6 +323,7 @@ ENGINE = InnoDB;
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
 
 
 insert into CLASS (id, year, semester, section) values (1, 2015, 'Fall', 1);
