@@ -695,3 +695,14 @@ $app->put('/resources',function($request,$response,$args){
   $status['status'] = "success";
   return $response->write(json_encode($status));
 });
+$app->post('/resources/delete',function($request,$response,$args){
+  $db = $this->dbConn;
+  $resource = $request->getParsedBody();
+
+  $id = $resource['id'];
+  $sql = "DELETE FROM RESOURCES
+          WHERE id = '$id'";
+  $q = $db->query($sql);
+  $status['status'] = "success";
+  return $response->write(json_encode($status));
+});
