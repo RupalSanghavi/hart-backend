@@ -774,3 +774,45 @@ $app->put('/profilepic',function($request,$response,$args){
   return $response->write(json_encode($image_obj));
 
 });
+$app->get('/sprints/{sprint_number}',function($request,$response,$args){
+  $db = $this->dbConn;
+  $quantity = $request->getAttribute('sprint_number');
+  $email = $_SESSION['username'];
+  $sql = "SELECT t.id
+          FROM STUDENT s
+          INNER JOIN TEAM t
+          WHERE s.email = '$email'
+          AND t.id = s.TEAM_id";
+  $q = $db->query($sql);
+  $team_id_obj = $q->fetch(PDO::FETCH_ASSOC);
+  $team_id = $team_id_obj['id'];
+  $sql = "SELECT *
+          FROM SPRINT
+          WHERE TEAM_id = '$team_id'
+          ORDER BY start_date DESC
+          LIMIT $quantity";
+  $q = $db->query($sql);
+
+  $sprints = $q->fetchAll(PDO::FETCH_ASSOC);
+  //$TEAM_id = $sprints['TEAM_id'];
+  $sprints_adj = array();
+  $sql = "SELECT name
+          FROM TEAM
+          WHERE id = '$team_id'";
+  $q = $db->query($sql);
+  $team_name = $q->fetch(PDO::FETCH_ASSOC);
+  foreach($sprints as $sprint){
+    $sprint_adj = array();
+    $sprint_adj['number'] = $sprint['sprint_number'];
+    $sprint_adj['info'] = $sprint['info'];
+    $sprint_adj['date'] = $sprint['start_date'];
+    $sprint_adj['team_name'] = "bob";
+    $sprint_adj['scrum_master'] = $sprint['scrum_master'];
+    $sprint_adj['scribe'] = $sprint['scribe'];
+    $sprint_adj['team_name'] = $team_name['name'];
+    array_push($sprints_adj,$sprint_adj);
+  }
+  $obj['sprints'] = $sprints_adj;
+  return $response->write(json_encode($obj));
+
+});
