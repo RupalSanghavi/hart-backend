@@ -546,3 +546,13 @@ $app->post('/students/delete',function($request,$response,$args){
   $success['status'] = "success";
   return $response->write(json_encode($success));
 });
+$app->get('/calendar/{team_id}',function($request,$response,$args){
+    $db = $this->dbConn;
+    $id = $request->getAttribute('team_id');
+    $sql = "SELECT *
+            FROM EVENTS
+            WHERE TEAM_id = '$id'";
+    $q = $db->query($sql);
+    $events = $q->fetchAll(PDO::FETCH_ASSOC);
+    echo $events;
+  });
