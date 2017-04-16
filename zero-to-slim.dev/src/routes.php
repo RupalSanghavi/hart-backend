@@ -207,6 +207,9 @@ $app->post('/login',function($request,$response,$args){
     // print_r(count($_SESSION));
     $_SESSION["authenticated"] = true;
     $_SESSION['username'] = $username;
+    // $sql = "SELECT id
+    //         FROM STUDENT s
+    //         WHERE s.email = "
     // print_r($_SESSION);
     // print_r(count($_SESSION));
     //$auth['authenticated'] = true;
@@ -756,5 +759,18 @@ $app->get('/student/{student_id}',function($request,$response,$args){
     array_push($focuses_adj, $focus);
   }
   $student_adj['hla_focus'] = $focuses_adj;
-  echo json_encode($student_adj);
+  return $response->write(json_encode($student_adj));
+});
+$app->put('/profilepic',function($request,$response,$args){
+  $db = $this->dbConn;
+  // $arr = (array) $request->getAttribute("token");
+  $image_obj = $request->getParsedBody();
+  $image = $image_obj['image'];
+  $email = $_SESSION['username'];
+  $sql = "UPDATE STUDENT
+          SET image = '$image'
+          WHERE email = '$email'";
+  $q = $db->query($sql);
+  return $response->write(json_encode($image_obj));
+
 });
