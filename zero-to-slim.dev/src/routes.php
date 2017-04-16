@@ -706,3 +706,55 @@ $app->post('/resources/delete',function($request,$response,$args){
   $status['status'] = "success";
   return $response->write(json_encode($status));
 });
+$app->get('/student/{student_id}',function($request,$response,$args){
+  $db = $this->dbConn;
+  $id = $request->getAttribute('student_id');
+  $sql = "SELECT s.*, c.section, t.name
+          FROM STUDENT s
+          INNER JOIN CLASS c
+          INNER JOIN TEAM t
+          WHERE s.id = '$id'
+          AND s.CLASS_id = c.id
+          AND s.TEAM_id = t.id";
+  $q = $db->query($sql);
+  $student = $q->fetch(PDO::FETCH_ASSOC);
+  $student_adj = array();
+  $student_adj['first_name'] = $student['first_name'];
+  $student_adj['section'] = $student['section'];
+  $student_adj['last_name'] = $student['last_name'];
+  $student_adj['team_name'] = $student['name'];
+  $student_adj['image'] = $student['image'];
+  $student_adj['major'] = $student['major'];
+  $student_adj['info'] = $student['info'];
+  $student_adj['knowledge'] = $student['knowledge'];
+  $student_adj['skills_abilities'] = $student['skills_abilities'];
+  $sql = "SELECT tr.name
+          FROM STUDENT s
+          INNER JOIN STUDENT_ROLES sr
+          INNER JOIN TEAM_ROLES tr
+          WHERE s.id = '$id'
+          AND sr.STUDENT_id = s.id
+          AND tr.id = sr.TEAM_ROLES_id";
+  $q = $db->query($sql);
+  $roles_obj = $q->fetchAll(PDO::FETCH_ASSOC);
+  $roles_adj = array();
+  foreach($roles_obj as $role_obj){
+    $role = $role_obj['name'];
+    array_push($roles_adj, $role);
+  }
+  $student_adj['team_roles'] = $roles_adj;
+  $sql = "SELECT focus_name
+          FROM STUDENT s
+          INNER JOIN HLA_FOCUS hf
+          WHERE s.id = '$id'
+          AND hf.STUDENT_id = '$id'";
+  $q = $db->query($sql);
+  $focuses_obj = $q->fetchAll(PDO::FETCH_ASSOC);
+  $focuses_adj = array();
+  foreach($focuses_obj as $focus_obj){
+    $focus = $focus_obj['focus_name'];
+    array_push($focuses_adj, $focus);
+  }
+  $student_adj['hla_focus'] = $focuses_adj;
+  echo json_encode($student_adj);
+});
