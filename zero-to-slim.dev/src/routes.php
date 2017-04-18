@@ -42,6 +42,25 @@ $app->post('/forgot', function($request,$response,$args){
 // 	echo $response->headers();
 // 	echo $response->body();
 });
+$app->post('/faculty/add', function($request,$response,$args){
+    $db = $this->dbConn;
+    $data = $request->getParsedBody();
+    $admin = $data['admin'];
+    $first_name = $data['firstName'];
+    $last_name = $data['lastName'];
+    $email = $data['email'];
+    $sql = "INSERT INTO STAFF (admin, first_name, last_name, email)
+            VALUES ('$admin', '$first_name', '$last_name', '$email')";
+    $db->query($sql);
+    $sql = $sql = "SELECT id
+            FROM STAFF
+            WHERE email = '$email'";
+    $q = $db->query($sql);
+    $obj = $q->fetch(PDO::FETCH_ASSOC);
+    $id = $obj['id'];
+    return $response->write(json_encode($id));
+});
+
 $app->get('/majors', function ($request, $response, $args) {
   try{
     $db = $this->dbConn;
