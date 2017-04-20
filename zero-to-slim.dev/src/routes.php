@@ -14,6 +14,21 @@ $servername = "localhost";
 $username = "root";
 
 date_default_timezone_set('America/Chicago');
+
+
+// from http://php.net/manual/en/function.hash-equals.php
+function hash_equals($str1,$str2)
+{
+      if(strlen($str1) != strlen($str2)) {
+        return false;
+      } else {
+        $res = $str1 ^ $str2;
+        $ret = 0;
+        for($i = strlen($res) - 1; $i >= 0; $i--) $ret |= ord($res[$i]);
+        return !$ret;
+      }
+}
+
 $app->post('/forgot', function($request,$response,$args){
 // 	require '../vendor/autoload.php';
 // 	$forgot = file_get_contents('forgot.html', true);
@@ -196,6 +211,33 @@ $app->post('/newstudent', function($request,$response,$args){
             WHERE id = '$student_id'";
     $db->query($sql);
 });
+$app->post('/registration',function($request,$response,$args)
+{
+  $db = $this->dbConn;
+  $data = $request->getParsedBody();
+  $password = $data['password'];
+  $email = $data['email'];
+  $cost = 10;
+  $salt = strtr(base64_encode(mcrypt_create_iv(16,MCRYPT_DEV_URANDOM)),'+','.'); //generating a salt
+  $salt = sprintf("$2a$%02d$", $cost) . $salt; //Prefix for PHP verification purposes. 2a refers to Blowfish algorithm used
+  $hash = crypt($password,$salt);
+
+  $arr = false;
+  if($arr == false)//successful
+  {
+    $sql = "INSERT into STUDENT (email,salt,hash) VALUES ('$email','$salt','$hash');";
+    $db->query($sql);
+    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+
+    $success = "true";
+    $str = array("registered" => $success);
+    //echo $success;
+    return $response->write(json_encode($str));
+  }
+
+});
+
 $app->post('/login',function($request,$response,$args){
     $db = $this->dbConn;
     $data = $request->getParsedBody();
@@ -203,16 +245,45 @@ $app->post('/login',function($request,$response,$args){
     $password = $data['password'];
     // session_destroy();
     // print_r($_SESSION);
-    // print_r(count($_SESSION));
-    $_SESSION["authenticated"] = true;
-    $_SESSION['username'] = $username;
+    // // print_r(count($_SESSION));
+    // $_SESSION["authenticated"] = true;
+    // $_SESSION['username'] = $username;
+    // echo $_SESSION['username'];
     // $sql = "SELECT id
     //         FROM STUDENT s
-    //         WHERE s.email = "
+    //         WHERE s.email = '$username';"
+    // $q = $db->query($sql);
+
+    $db = $this->dbConn;
+    $data = $request->getParsedBody();
+    $username = $data['username'];
+    $password = $data['password'];
+    $sql = "SELECT hash, salt
+            FROM STUDENT
+            WHERE email = '$username';";
+    $q = $db->query($sql);
+    $array = $q->fetch(PDO::FETCH_ASSOC);
+    $hash = $array['hash'];
+    $salt = $array['salt'];
+    $token = strtr(base64_encode(mcrypt_create_iv(16,MCRYPT_DEV_URANDOM)),'+','.');
+    if(hash_equals($hash,crypt($password,$salt))) // Valid
+    {
+      $_SESSION["authenticated"] = true;
+      $_SESSION['username'] = $username;
+      return $response->write(json_encode($_SESSION));
+    }
+    else //incorrect password
+    {
+      $_SESSION["authenticated"] = false;
+      session_destroy();
+      return $response->write(json_encode($_SESSION));
+    }
+
+
+
     // print_r($_SESSION);
     // print_r(count($_SESSION));
     //$auth['authenticated'] = true;
-    return $response->write(json_encode($_SESSION));
 });
 $app->get('/checkauth',function($request,$response,$args){
    $auth = 0;
@@ -221,14 +292,14 @@ $app->get('/checkauth',function($request,$response,$args){
       $auth = 1;
     }
    else {}
-   return $response->write(json_encode($_SESSION));
+   return $response->write(json_encode($auth));
 
 });
 $app->post('/logout',function($request,$response,$args){
     $db = $this->dbConn;
-    $data = $request->getParsedBody();
-    $username = $data['username'];
-    $password = $data['password'];
+    // $data = $request->getParsedBody();
+    // $username = $data['username'];
+    // $password = $data['password'];
     session_destroy();
 });
 $app->post('/faculty/delete',function($request,$response,$args){
@@ -453,6 +524,7 @@ $app->get('/announcements/{quantity}',function($request,$response,$args){
     $sql = "SELECT *
             FROM ANNOUNCEMENTS";
     $q = $db->query($sql);
+    echo $sql;
     $announcements = $q->fetchAll(PDO::FETCH_ASSOC);
     $annArr = [];
     foreach($announcements as $announcement){
