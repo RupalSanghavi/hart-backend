@@ -274,7 +274,8 @@ $app->post('/registration',function($request,$response,$args)
   $arr = false;
   if($arr == false)//successful
   {
-    $sql = "INSERT into STUDENT (email,salt,hash) VALUES ('$email','$salt','$hash');";
+    $sql = "INSERT into STAFF (email,salt,hash) VALUES ('$email','$salt','$hash');";
+    echo $sql;
     $db->query($sql);
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
@@ -292,41 +293,36 @@ $app->post('/login',function($request,$response,$args){
     $data = $request->getParsedBody();
     $username = $data['username'];
     $password = $data['password'];
-    // session_destroy();
-    // print_r($_SESSION);
-    // // print_r(count($_SESSION));
-    // $_SESSION["authenticated"] = true;
-    // $_SESSION['username'] = $username;
-    // echo $_SESSION['username'];
-    // $sql = "SELECT id
-    //         FROM STUDENT s
-    //         WHERE s.email = '$username';"
-    // $q = $db->query($sql);
 
-    $db = $this->dbConn;
-    $data = $request->getParsedBody();
-    $username = $data['username'];
-    $password = $data['password'];
     $success = array();
     $sql = "SELECT hash, salt
             FROM STUDENT
             WHERE email = '$username';";
     $q = $db->query($sql);
     $array = $q->fetch(PDO::FETCH_ASSOC);
+    //check if student or admin
     if(count($array) <= 1){
       //not a student
       $sql = "SELECT hash, salt
               FROM STAFF
-              WHERE id = '$username';";
+              WHERE email = '$username';";
       $q = $db->query($sql);
-      $admin_arr = $q->fetch(PDO::FETCH_ASSOC);
-      if(count($admin_arr == 0)){
+      $array = $q->fetch(PDO::FETCH_ASSOC);
+      if(count($array) == 0){
+        $success['admin'] = false;
         $msg = "No existing account. ";
         $success['authenticated'] = false;
         $success['msg'] = $msg;
         return $response->write(json_encode($success));
       }
+      else{
+        $success['admin'] = true;
+      }
     }
+    else{
+      $success['admin'] = false;
+    }
+    //check if password is correct
     $hash = $array['hash'];
     $salt = $array['salt'];
     $token = strtr(base64_encode(mcrypt_create_iv(16,MCRYPT_DEV_URANDOM)),'+','.');
@@ -345,11 +341,6 @@ $app->post('/login',function($request,$response,$args){
       return $response->write(json_encode($success));
     }
 
-
-
-    // print_r($_SESSION);
-    // print_r(count($_SESSION));
-    //$auth['authenticated'] = true;
 });
 $app->get('/checkauth',function($request,$response,$args){
    $auth = 0;
