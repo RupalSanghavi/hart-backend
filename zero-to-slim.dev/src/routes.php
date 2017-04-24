@@ -199,6 +199,36 @@ $app->get('/teams',function($request,$response,$args){
     $this->notFoundHandler;
   }
 });
+$app->post('/student/add', function($request,$response,$args){
+  $db = $this->dbConn;
+  $data = $request->getParsedBody();
+  $firstName = $data['firstName'];
+  $lastName = $data['lastName'];
+  $email = $data['email'];
+  $section = $data['section'];
+  $now = date('Y');
+  echo "";
+  $month = date('m');
+  if($month < 5){
+    $semester = "Spring";
+  }
+  else{
+    $semester = "Fall";
+}
+  $sql = "SELECT c.id
+          FROM CLASS c
+          WHERE c.year = '$now'
+          AND c.semester = '$semester'";
+  $q = $db->query($sql);
+  $class_id_obj = $q->fetch(PDO::FETCH_ASSOC);
+  $class_id = $class_id_obj['id'];
+  $sql2 = "INSERT INTO STUDENT
+         (first_name,last_name,email,CLASS_id)
+         VALUES ('$firstName','$lastName','$email','$class_id')";
+  $q = $db->query($sql2);
+  echo $month;
+
+});
 $app->post('/newstudent', function($request,$response,$args){
     $db = $this->dbConn;
     $data = $request->getParsedBody();
@@ -258,25 +288,42 @@ $app->post('/login',function($request,$response,$args){
     $data = $request->getParsedBody();
     $username = $data['username'];
     $password = $data['password'];
+    $success = array();
     $sql = "SELECT hash, salt
             FROM STUDENT
             WHERE email = '$username';";
     $q = $db->query($sql);
     $array = $q->fetch(PDO::FETCH_ASSOC);
+    if(count($array) <= 1){
+      //not a student
+      $sql = "SELECT hash, salt
+              FROM STAFF
+              WHERE id = '$username';";
+      $q = $db->query($sql);
+      $admin_arr = $q->fetch(PDO::FETCH_ASSOC);
+      if(count($admin_arr == 0)){
+        $msg = "No existing account. ";
+        $success['authenticated'] = false;
+        $success['msg'] = $msg;
+        return $response->write(json_encode($success));
+      }
+    }
     $hash = $array['hash'];
     $salt = $array['salt'];
     $token = strtr(base64_encode(mcrypt_create_iv(16,MCRYPT_DEV_URANDOM)),'+','.');
     if(hash_equals($hash,crypt($password,$salt))) // Valid
     {
       $_SESSION["authenticated"] = true;
+      $success['authenticated'] = true;
       $_SESSION['username'] = $username;
-      return $response->write(json_encode($_SESSION));
+      return $response->write(json_encode($success));
     }
     else //incorrect password
     {
       $_SESSION["authenticated"] = false;
+      $success['authenticated'] = false;
       session_destroy();
-      return $response->write(json_encode($_SESSION));
+      return $response->write(json_encode($success));
     }
 
 

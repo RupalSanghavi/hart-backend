@@ -216,6 +216,8 @@ CREATE TABLE IF NOT EXISTS `mydb`.`STAFF` (
   `admin` TINYINT NULL,
   `first_name` VARCHAR(45) NULL,
   `last_name` VARCHAR(45) NULL,
+  `hash` VARCHAR(200) NULL,
+  `salt` VARCHAR(200) NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
 
@@ -376,9 +378,9 @@ insert into HLA_FOCUS (focus_name, STUDENT_id, id) values ('leader', 9, 19);
 insert into HLA_FOCUS (focus_name, STUDENT_id, id) values ('finisher', 10, 20);
 insert into TEAM_CHARTER (id, ideating, decision_making, disputes, conflicts, fun, team_purpose, stakeholders, mission, TEAM_id) values (1, 'Curabitur convallis. Duis consequat dui nec nisi volutpat eleifend.', 'Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Etiam vel augue. Vestibulum rutrum rutrum neque. Aenean auctor gravida sem.', 'In eleifend quam a odio.', 'Duis bibendum, felis sed interdum venenatis, turpis enim blandit mi, in porttitor pede justo eu massa. Donec dapibus. Duis at velit eu est congue elementum.', 'Nunc purus. Phasellus in felis. Donec semper sapien a libero. Nam dui.', 'Donec odio justo, sollicitudin ut, suscipit a, feugiat et, eros. Vestibulum ac est lacinia nisi venenatis tristique.', 'Curabitur in libero ut massa volutpat convallis. Morbi odio odio, elementum eu, interdum eu, tincidunt in, leo. Maecenas pulvinar lobortis est. Phasellus sit amet erat.', 'Phasellus id sapien in sapien iaculis congue. Vivamus metus arcu, adipiscing molestie, hendrerit at, vulputate vitae, nisl.', 1);
 insert into TEAM_CHARTER (id, ideating, decision_making, disputes, conflicts, fun, team_purpose, stakeholders, mission, TEAM_id) values (2, 'Aliquam non mauris.', 'Aliquam erat volutpat.', 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Proin risus.', 'Curabitur in libero ut massa volutpat convallis. Morbi odio odio, elementum eu, interdum eu, tincidunt in, leo. Maecenas pulvinar lobortis est. Phasellus sit amet erat.', 'Maecenas tristique, est et tempus semper, est quam pharetra magna, ac consequat metus sapien ut nunc. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Mauris viverra diam vitae quam. Suspendisse potenti. Nullam porttitor lacus at turpis.', 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Proin risus.', 'Vivamus vel nulla eget eros elementum pellentesque.', 'Duis ac nibh. Fusce lacus purus, aliquet at, feugiat non, pretium quis, lectus.', 2);
-insert into STAFF (id, admin, last_name, first_name) values (1, 1, 'Johnston', 'Robert');
-insert into STAFF (id, admin, last_name, first_name) values (2, 1, 'Palmer', 'Marilyn');
-insert into STAFF (id, admin, last_name, first_name) values (3, 1, 'Shaw', 'Gloria');
+insert into STAFF (id, admin, last_name, first_name, hash, salt) values (1, 1, 'Larson', 'Lawrence', '72b60d1e3bc9af91f3b3c1c3fd066ae84f104f74', 'consectetuer');
+insert into STAFF (id, admin, last_name, first_name, hash, salt) values (2, 1, 'Sanders', 'Antonio', '72b0d04317792ba2c522de7a4c75af3ec7c55471', 'ut');
+insert into STAFF (id, admin, last_name, first_name, hash, salt) values (3, 1, 'Smith', 'Todd', '8787b8ed5bfca1e8d4d29ce7815f39ce973ba68e', 'luctus');
 insert into ANNOUNCEMENTS (title, body, create_datetime, priority, creator, id, STAFF_id) values ('cum sociis', 'Integer ac leo.', '2016-09-08 09:29:30', 1, 'David Howell', 1, 1);
 insert into ANNOUNCEMENTS (title, body, create_datetime, priority, creator, id, STAFF_id) values ('lorem', 'Ut tellus.', '2017-01-05 10:05:39', 2, 'Larry Sims', 2, 2);
 insert into ANNOUNCEMENTS (title, body, create_datetime, priority, creator, id, STAFF_id) values ('natoque penatibus', 'Duis bibendum.', '2016-11-12 23:55:19', 3, 'Kathleen Hansen', 3, 3);
