@@ -216,8 +216,12 @@ CREATE TABLE IF NOT EXISTS `mydb`.`STAFF` (
   `admin` TINYINT NULL,
   `first_name` VARCHAR(45) NULL,
   `last_name` VARCHAR(45) NULL,
+<<<<<<< HEAD
   `hash` VARCHAR(200) NULL,
   `salt` VARCHAR(200) NULL,
+=======
+  `email` VARCHAR(45) NOT NULL,
+>>>>>>> 3a5744909a86c7d23da5ac6287e12fc775685b16
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
 
@@ -381,6 +385,7 @@ insert into TEAM_CHARTER (id, ideating, decision_making, disputes, conflicts, fu
 insert into STAFF (id, admin, last_name, first_name, hash, salt) values (1, 1, 'Larson', 'Lawrence', '72b60d1e3bc9af91f3b3c1c3fd066ae84f104f74', 'consectetuer');
 insert into STAFF (id, admin, last_name, first_name, hash, salt) values (2, 1, 'Sanders', 'Antonio', '72b0d04317792ba2c522de7a4c75af3ec7c55471', 'ut');
 insert into STAFF (id, admin, last_name, first_name, hash, salt) values (3, 1, 'Smith', 'Todd', '8787b8ed5bfca1e8d4d29ce7815f39ce973ba68e', 'luctus');
+
 insert into ANNOUNCEMENTS (title, body, create_datetime, priority, creator, id, STAFF_id) values ('cum sociis', 'Integer ac leo.', '2016-09-08 09:29:30', 1, 'David Howell', 1, 1);
 insert into ANNOUNCEMENTS (title, body, create_datetime, priority, creator, id, STAFF_id) values ('lorem', 'Ut tellus.', '2017-01-05 10:05:39', 2, 'Larry Sims', 2, 2);
 insert into ANNOUNCEMENTS (title, body, create_datetime, priority, creator, id, STAFF_id) values ('natoque penatibus', 'Duis bibendum.', '2016-11-12 23:55:19', 3, 'Kathleen Hansen', 3, 3);
