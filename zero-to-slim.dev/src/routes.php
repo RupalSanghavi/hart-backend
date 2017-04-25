@@ -4,13 +4,7 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST,GET,OPTIONS');
 header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept');
 
-// header("Access-Control-Allow-Headers: Content-Type");
-// header('Access-Control-Allow-Origin: *');
-//
-// header('Access-Control-Allow-Methods: GET, POST');
-//
-// header("Access-Control-Allow-Headers: X-Requested-With");
-// Routes
+
 $servername = "localhost";
 $username = "root";
 
@@ -383,7 +377,6 @@ $app->post('/login',function($request,$response,$args){
       $_SESSION["authenticated"] = true;
       $success['authenticated'] = true;
       $_SESSION['username'] = $username;
-
       return $response->write(json_encode($success));
     }
     else //incorrect password
@@ -396,7 +389,6 @@ $app->post('/login',function($request,$response,$args){
 
 });
 $app->get('/checkauth',function($request,$response,$args){
-   session_start();
    $auth = 0;
    if(count($_SESSION) == 0){}
    else if($_SESSION["authenticated"] == true){
@@ -1011,7 +1003,7 @@ $app->get('/teamsprints/{team_id}',function($request,$response,$args){
 $app->get('/sprints/{quantity}',function($request,$response,$args){
   $db = $this->dbConn;
   $quantity = $request->getAttribute('quantity');
-  $email = $_SESSION['username'];
+  $email = 'test@gmail.com';
   #$email = "khubbard@lyle.smu.edu";
   $sql = "SELECT t.id
           FROM STUDENT s
@@ -1028,6 +1020,11 @@ $app->get('/sprints/{quantity}',function($request,$response,$args){
           LIMIT $quantity";
   $q = $db->query($sql);
   $sprints = $q->fetchAll(PDO::FETCH_ASSOC);
+  $start_date = $sprints['start_date'];
+  $end_date = $sprints['end_date'];
+  $duration = $end_date - $start_date;
+  $progress = $start_date + $duration;
+  echo $end_date;
   //$TEAM_id = $sprints['TEAM_id'];
   $sprints_adj = array();
   $sql = "SELECT name
