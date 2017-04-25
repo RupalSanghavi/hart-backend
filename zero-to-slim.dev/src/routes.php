@@ -77,35 +77,25 @@ $app->post('/faculty/add', function($request,$response,$args){
     return $response->write(json_encode($id));
 });
 
-$app->get('/majors/{year}/{semester}', function ($request, $response, $args) {
+$app->post('/majors', function ($request, $response, $args) {
   try{
     $db = $this->dbConn;
-    $filters = $request->getParsedBody();
-    $years = $filters['year'];
-    $semesters = $filters['semester'];
-    $sql = 'SELECT COUNT(*) as value, major as name
-            FROM STUDENT
-            GROUP BY major';
+    $data = $request->getParsedBody();
+    $years = $data['year'];
+    $in = implode(", ", $years);
+    $semesters = $data['semester'];
+    $in2 = "'".implode("', '", $semesters)."'";
+    $sql = "SELECT COUNT(s.id) as value, s.major as name
+            FROM STUDENT s
+            INNER JOIN CLASS c
+            WHERE s.CLASS_id = c.id
+            AND year IN ($in)
+            AND semester IN($in2)
+            GROUP BY major";
     $q = $db->query($sql);
-
     $check = $q->fetchAll(PDO::FETCH_ASSOC);
     return $response->write(json_encode($check));
-    // foreach($check as $row){
-    //   $arr[] = $row;
-    // }
-    // $returnArr = array();
-    // $assocArr = array();
-    // foreach($arr as $row){
-    //   $arr[] = $row;
-    // }
-    // foreach($arr as $row){
-    //   $returnArr['name'] = $row['name'];
-    //   $returnArr['ME'] = 5;
-    //   $returnArr['CSE'] = 6;
-    //
-    //   $AssocArr[] = $returnArr;
-    // }
-    // return $response->write(json_encode($AssocArr));
+
   }
   catch(PDOException $e){
     print "Error!: " . $e->getMessage() . "<br/>";
