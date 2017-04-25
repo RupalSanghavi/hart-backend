@@ -76,7 +76,35 @@ $app->post('/faculty/add', function($request,$response,$args){
     $id = $obj['id'];
     return $response->write(json_encode($id));
 });
+$app->post('/teamroles', function ($request, $response, $args) {
+  try{
+    $db = $this->dbConn;
+    $data = $request->getParsedBody();
+    $years = $data['year'];
+    $in = implode(", ", $years);
+    $semesters = $data['semester'];
+    $in2 = "'".implode("', '", $semesters)."'";
+    $sql = "SELECT COUNT(s.id) as value, tr.name
+            FROM STUDENT s
+            INNER JOIN STUDENT_ROLES sr
+            INNER JOIN TEAM_ROLES tr
+            INNER JOIN CLASS c
+            WHERE s.CLASS_id = c.id
+            AND sr.STUDENT_id = s.id
+            AND tr.id = sr.TEAM_ROLES_id
+            AND year IN ($in)
+            AND semester IN($in2)
+            GROUP BY tr.name";
+    $q = $db->query($sql);
+    $check = $q->fetchAll(PDO::FETCH_ASSOC);
+    return $response->write(json_encode($check));
 
+  }
+  catch(PDOException $e){
+    print "Error!: " . $e->getMessage() . "<br/>";
+    $this->notFoundHandler;
+  }
+});
 $app->post('/majors', function ($request, $response, $args) {
   try{
     $db = $this->dbConn;
@@ -134,6 +162,7 @@ $app->get('/sections/{section}', function ($request, $response, $args) {
     $this->notFoundHandler;
   }
 });
+
 $app->post('/team', function($request,$response,$args){
     $db = $this->dbConn;
     $data = $request->getParsedBody();
