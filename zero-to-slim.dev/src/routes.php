@@ -458,7 +458,8 @@ $app->post('/faculty/delete',function($request,$response,$args){
 
 $app->get('/forms',function($request,$response,$args){
   $db = $this->dbConn;
-  $email = $_SESSION['username'];
+  // $email = $_SESSION['username'];
+  $email = "test@gmail.com";
   $sql = "SELECT t.id
           FROM STUDENT s
           INNER JOIN TEAM t
