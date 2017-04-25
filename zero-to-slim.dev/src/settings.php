@@ -14,7 +14,7 @@ return [
         'renderer' => [
             'template_path' => __DIR__ . '/../templates/',
         ],
-
+        'session.handler' => null,
         // Monolog settings
         'logger' => [
             'name' => 'slim-app',

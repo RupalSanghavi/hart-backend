@@ -1,15 +1,10 @@
 <?php
+
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST,GET,OPTIONS');
 header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept');
 
-// header("Access-Control-Allow-Headers: Content-Type");
-// header('Access-Control-Allow-Origin: *');
-//
-// header('Access-Control-Allow-Methods: GET, POST');
-//
-// header("Access-Control-Allow-Headers: X-Requested-With");
-// Routes
+
 $servername = "localhost";
 $username = "root";
 
@@ -75,32 +70,81 @@ $app->post('/faculty/add', function($request,$response,$args){
     $id = $obj['id'];
     return $response->write(json_encode($id));
 });
-
-$app->get('/majors', function ($request, $response, $args) {
+$app->post('/focus', function ($request, $response, $args) {
   try{
     $db = $this->dbConn;
-
-    $sql = 'SELECT name
-            FROM TEAM;';
+    $data = $request->getParsedBody();
+    $years = $data['year'];
+    $in = implode(", ", $years);
+    $semesters = $data['semester'];
+    $in2 = "'".implode("', '", $semesters)."'";
+    $sql = "SELECT COUNT(s.id) as value, hf.focus_name as name
+            FROM STUDENT s
+            INNER JOIN HLA_FOCUS hf
+            INNER JOIN CLASS c
+            WHERE s.CLASS_id = c.id
+            AND hf.STUDENT_id = s.id
+            AND year IN ($in)
+            AND semester IN($in2)
+            GROUP BY hf.focus_name";
     $q = $db->query($sql);
-
     $check = $q->fetchAll(PDO::FETCH_ASSOC);
-    foreach($check as $row){
-      $arr[] = $row;
-    }
-    $returnArr = array();
-    $assocArr = array();
-    foreach($arr as $row){
-      $arr[] = $row;
-    }
-    foreach($arr as $row){
-      $returnArr['name'] = $row['name'];
-      $returnArr['ME'] = 5;
-      $returnArr['CSE'] = 6;
+    return $response->write(json_encode($check));
 
-      $AssocArr[] = $returnArr;
-    }
-    return $response->write(json_encode($AssocArr));
+  }
+  catch(PDOException $e){
+    print "Error!: " . $e->getMessage() . "<br/>";
+    $this->notFoundHandler;
+  }
+});
+$app->post('/teamroles', function ($request, $response, $args) {
+  try{
+    $db = $this->dbConn;
+    $data = $request->getParsedBody();
+    $years = $data['year'];
+    $in = implode(", ", $years);
+    $semesters = $data['semester'];
+    $in2 = "'".implode("', '", $semesters)."'";
+    $sql = "SELECT COUNT(s.id) as value, tr.name
+            FROM STUDENT s
+            INNER JOIN STUDENT_ROLES sr
+            INNER JOIN TEAM_ROLES tr
+            INNER JOIN CLASS c
+            WHERE s.CLASS_id = c.id
+            AND sr.STUDENT_id = s.id
+            AND tr.id = sr.TEAM_ROLES_id
+            AND year IN ($in)
+            AND semester IN($in2)
+            GROUP BY tr.name";
+    $q = $db->query($sql);
+    $check = $q->fetchAll(PDO::FETCH_ASSOC);
+    return $response->write(json_encode($check));
+
+  }
+  catch(PDOException $e){
+    print "Error!: " . $e->getMessage() . "<br/>";
+    $this->notFoundHandler;
+  }
+});
+$app->post('/majors', function ($request, $response, $args) {
+  try{
+    $db = $this->dbConn;
+    $data = $request->getParsedBody();
+    $years = $data['year'];
+    $in = implode(", ", $years);
+    $semesters = $data['semester'];
+    $in2 = "'".implode("', '", $semesters)."'";
+    $sql = "SELECT COUNT(s.id) as value, s.major as name
+            FROM STUDENT s
+            INNER JOIN CLASS c
+            WHERE s.CLASS_id = c.id
+            AND year IN ($in)
+            AND semester IN($in2)
+            GROUP BY major";
+    $q = $db->query($sql);
+    $check = $q->fetchAll(PDO::FETCH_ASSOC);
+    return $response->write(json_encode($check));
+
   }
   catch(PDOException $e){
     print "Error!: " . $e->getMessage() . "<br/>";
@@ -139,6 +183,7 @@ $app->get('/sections/{section}', function ($request, $response, $args) {
     $this->notFoundHandler;
   }
 });
+
 $app->post('/team', function($request,$response,$args){
     $db = $this->dbConn;
     $data = $request->getParsedBody();
@@ -195,6 +240,7 @@ $app->get('/team/{team_id}', function($request,$response,$args){
 });
 $app->get('/teams',function($request,$response,$args){
   try{
+
     $db = $this->dbConn;
     $sql = "SELECT *
             FROM TEAM";
@@ -217,6 +263,36 @@ $app->get('/teams',function($request,$response,$args){
   catch(PDOException $e){
     $this->notFoundHandler;
   }
+});
+$app->post('/student/add', function($request,$response,$args){
+  $db = $this->dbConn;
+  $data = $request->getParsedBody();
+  $firstName = $data['firstName'];
+  $lastName = $data['lastName'];
+  $email = $data['email'];
+  $section = $data['section'];
+  $now = date('Y');
+  echo "";
+  $month = date('m');
+  if($month < 5){
+    $semester = "Spring";
+  }
+  else{
+    $semester = "Fall";
+}
+  $sql = "SELECT c.id
+          FROM CLASS c
+          WHERE c.year = '$now'
+          AND c.semester = '$semester'";
+  $q = $db->query($sql);
+  $class_id_obj = $q->fetch(PDO::FETCH_ASSOC);
+  $class_id = $class_id_obj['id'];
+  $sql2 = "INSERT INTO STUDENT
+         (first_name,last_name,email,CLASS_id)
+         VALUES ('$firstName','$lastName','$email','$class_id')";
+  $q = $db->query($sql2);
+  echo $month;
+
 });
 $app->post('/newstudent', function($request,$response,$args){
     $db = $this->dbConn;
@@ -244,7 +320,8 @@ $app->post('/registration',function($request,$response,$args)
   $arr = false;
   if($arr == false)//successful
   {
-    $sql = "INSERT into STUDENT (email,salt,hash) VALUES ('$email','$salt','$hash');";
+    $sql = "INSERT into STAFF (email,salt,hash) VALUES ('$email','$salt','$hash');";
+    echo $sql;
     $db->query($sql);
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
@@ -262,47 +339,54 @@ $app->post('/login',function($request,$response,$args){
     $data = $request->getParsedBody();
     $username = $data['username'];
     $password = $data['password'];
-    // session_destroy();
-    // print_r($_SESSION);
-    // // print_r(count($_SESSION));
-    // $_SESSION["authenticated"] = true;
-    // $_SESSION['username'] = $username;
-    // echo $_SESSION['username'];
-    // $sql = "SELECT id
-    //         FROM STUDENT s
-    //         WHERE s.email = '$username';"
-    // $q = $db->query($sql);
 
-    $db = $this->dbConn;
-    $data = $request->getParsedBody();
-    $username = $data['username'];
-    $password = $data['password'];
+    $success = array();
     $sql = "SELECT hash, salt
             FROM STUDENT
             WHERE email = '$username';";
     $q = $db->query($sql);
     $array = $q->fetch(PDO::FETCH_ASSOC);
+    //check if student or admin
+    if(count($array) <= 1){
+      //not a student
+      $sql = "SELECT hash, salt
+              FROM STAFF
+              WHERE email = '$username';";
+      $q = $db->query($sql);
+      $array = $q->fetch(PDO::FETCH_ASSOC);
+      if(count($array) == 0){
+        $success['admin'] = false;
+        $msg = "No existing account. ";
+        $success['authenticated'] = false;
+        $success['msg'] = $msg;
+        return $response->write(json_encode($success));
+      }
+      else{
+        $success['admin'] = true;
+      }
+    }
+    else{
+      $success['admin'] = false;
+    }
+    //check if password is correct
     $hash = $array['hash'];
     $salt = $array['salt'];
     $token = strtr(base64_encode(mcrypt_create_iv(16,MCRYPT_DEV_URANDOM)),'+','.');
     if(hash_equals($hash,crypt($password,$salt))) // Valid
     {
       $_SESSION["authenticated"] = true;
+      $success['authenticated'] = true;
       $_SESSION['username'] = $username;
-      return $response->write(json_encode($_SESSION));
+      return $response->write(json_encode($success));
     }
     else //incorrect password
     {
       $_SESSION["authenticated"] = false;
+      $success['authenticated'] = false;
       session_destroy();
-      return $response->write(json_encode($_SESSION));
+      return $response->write(json_encode($success));
     }
 
-
-
-    // print_r($_SESSION);
-    // print_r(count($_SESSION));
-    //$auth['authenticated'] = true;
 });
 $app->get('/checkauth',function($request,$response,$args){
    $auth = 0;
@@ -311,7 +395,7 @@ $app->get('/checkauth',function($request,$response,$args){
       $auth = 1;
     }
    else {}
-   return $response->write(json_encode($auth));
+   return $response->write(json_encode($_SESSION));
 
 });
 $app->post('/logout',function($request,$response,$args){
@@ -813,10 +897,9 @@ $app->put('/resources',function($request,$response,$args){
 $app->post('/resources/delete',function($request,$response,$args){
   $db = $this->dbConn;
   $resource = $request->getParsedBody();
-
-  $id = $resource['id'];
+  $link = $resource['link'];
   $sql = "DELETE FROM RESOURCES
-          WHERE id = '$id'";
+          WHERE link = '$link'";
   $q = $db->query($sql);
   $status['status'] = "success";
   return $response->write(json_encode($status));
@@ -886,25 +969,14 @@ $app->put('/profilepic',function($request,$response,$args){
   return $response->write(json_encode($image_obj));
 
 });
-$app->get('/sprints/{quantity}',function($request,$response,$args){
+$app->get('/teamsprints/{team_id}',function($request,$response,$args){
   $db = $this->dbConn;
-  $quantity = $request->getAttribute('quantity');
-  $email = $_SESSION['username'];
-  $sql = "SELECT t.id
-          FROM STUDENT s
-          INNER JOIN TEAM t
-          WHERE s.email = '$email'
-          AND t.id = s.TEAM_id";
-  $q = $db->query($sql);
-  $team_id_obj = $q->fetch(PDO::FETCH_ASSOC);
-  $team_id = $team_id_obj['id'];
+  $team_id = $request->getAttribute('team_id');
   $sql = "SELECT *
           FROM SPRINT
           WHERE TEAM_id = '$team_id'
-          ORDER BY start_date DESC
-          LIMIT $quantity";
+          ORDER BY start_date DESC";
   $q = $db->query($sql);
-
   $sprints = $q->fetchAll(PDO::FETCH_ASSOC);
   //$TEAM_id = $sprints['TEAM_id'];
   $sprints_adj = array();
@@ -926,7 +998,83 @@ $app->get('/sprints/{quantity}',function($request,$response,$args){
   }
   $obj['sprints'] = $sprints_adj;
   return $response->write(json_encode($obj));
+});
+$app->get('/sprints/{quantity}',function($request,$response,$args){
+  $db = $this->dbConn;
+  $quantity = $request->getAttribute('quantity');
+  $email = 'test@gmail.com';
+  #$email = "khubbard@lyle.smu.edu";
+  $sql = "SELECT t.id
+          FROM STUDENT s
+          INNER JOIN TEAM t
+          WHERE s.email = '$email'
+          AND t.id = s.TEAM_id";
+  $q = $db->query($sql);
+  $team_id_obj = $q->fetch(PDO::FETCH_ASSOC);
+  $team_id = $team_id_obj['id'];
+  // $team_name = $team_id_obj['name'];
+  $sql = "SELECT *
+          FROM SPRINT
+          WHERE TEAM_id = '$team_id'
+          ORDER BY start_date DESC
+          LIMIT $quantity";
+  $q = $db->query($sql);
+  $sprints = $q->fetchAll(PDO::FETCH_ASSOC);
+  // $start_date = $sprints[0]['start_date'];
+  // $end_date = $sprints[0]['end_date'];
+  $now = date('Y-m-d');
+  //$TEAM_id = $sprints['TEAM_id'];
+  $sprints_adj = array();
+  $sql = "SELECT name
+          FROM TEAM
+          WHERE id = '$team_id'";
+  $q = $db->query($sql);
+  $team_name = $q->fetch(PDO::FETCH_ASSOC);
+  foreach($sprints as $sprint){
+    $sprint_adj = array();
+    $sprint_adj['id'] = $sprint['id'];
+    $sprint_adj['info'] = $sprint['info'];
+    $sprint_adj['start_date'] = $sprint['start_date'];
+    $sprint_adj['end_date'] = $sprint['end_date'];
+    $sprint_adj['scrum_master'] = $sprint['scrum_master'];
+    $sprint_adj['scribe'] = $sprint['scribe'];
+    $sprint_adj['team_name'] = $team_name['name'];
+    $start_date = $sprint_adj['start_date'];
+    $end_date = $sprint_adj['end_date'];
+    if(strtotime($now) > strtotime($start_date)){
+      $sprint_adj['sprint_started'] = true;
+    }
+    else{
+      $sprint_adj['sprint_started'] = false;
+    }
+    $duration = abs(strtotime($end_date) - strtotime($start_date));
+    $progress = abs(strtotime($now) - strtotime($start_date));
+    $percentage = ($progress/$duration)*100;
+    $sprint_adj['progress_bar'] = $percentage;
 
+    array_push($sprints_adj,$sprint_adj);
+  }
+  $obj['sprints'] = $sprints_adj;
+  return $response->write(json_encode($obj));
+
+});
+$app->get('/sprint/{sprint_id}',function($request,$response,$args){
+  try{
+    $db = $this->dbConn;
+    $sprint_id = $request->getAttribute('sprint_id');
+    $data = $request->getParsedBody();
+    $sql = "SELECT *
+            FROM SPRINT
+            WHERE id = '$sprint_id'";
+    $q = $db->query($sql);
+    $sprint = $q->fetchAll(PDO::FETCH_ASSOC);
+    return $response->write(json_encode($sprint));
+
+  }
+  catch(PDOException $e){
+    print "Error!: " . $e->getMessage() . "<br/>";
+    $this->notFoundHandler;
+  }
 });
 $app->put('/sprint',function($request,$response,$args){
   $db = $this->dbConn;

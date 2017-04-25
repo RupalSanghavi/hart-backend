@@ -216,7 +216,9 @@ CREATE TABLE IF NOT EXISTS `mydb`.`STAFF` (
   `admin` TINYINT NULL,
   `first_name` VARCHAR(45) NULL,
   `last_name` VARCHAR(45) NULL,
-  `email` VARCHAR(45) NOT NULL,
+  `hash` VARCHAR(300) NULL,
+  `salt` VARCHAR(250) NULL,
+  `email` VARCHAR(200) NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
 
@@ -330,12 +332,16 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 insert into CLASS (id, year, semester, section) values (1, 2015, 'Fall', 1);
 insert into TEAM (id, name, logo, blog, charterCompleted,  TEAM_CHARTER_id, CLASS_id ) values (1, 'Aufderhar-Friesen', 'http://dummyimage.com/238x127.jpg/ff4444/ffffff', 'In est risus, auctor sed, tristique in, tempus sit amet, sem.', false, 2, 1);
 insert into TEAM (id, name, logo, blog, charterCompleted,  TEAM_CHARTER_id, CLASS_id ) values (2, 'Wolff LLC', 'http://dummyimage.com/224x107.bmp/5fa2dd/ffffff', 'Fusce congue, diam id ornare imperdiet, sapien urna pretium nisl, ut volutpat sapien arcu sed augue.', true, 1, 1);
-insert into SPRINT (id, sprint_number, start_date, end_date, scrum_master, scribe, info, TEAM_id) values (1, 1, '1/27/2016', '2/2/2017', 'Louis Snyder', 'Bobby Lane', 'Nulla justo.', 1);
-insert into SPRINT (id, sprint_number, start_date, end_date, scrum_master, scribe, info, TEAM_id) values (2, 2, '3/9/2016', '6/10/2016', 'Tina Howell', 'Harry Torres', 'Integer a nibh.', 2);
-insert into SPRINT (id, sprint_number, start_date, end_date, scrum_master, scribe, info, TEAM_id) values (3, 3, '1/3/2017', '8/1/2016', 'Walter Hicks', 'Harold Martinez', 'Donec dapibus.', 1);
-insert into SPRINT (id, sprint_number, start_date, end_date, scrum_master, scribe, info, TEAM_id) values (4, 4, '7/28/2016', '10/1/2016', 'Kevin Sanchez', 'Gary Mills', 'Donec semper sapien a libero.', 2);
-insert into SPRINT (id, sprint_number, start_date, end_date, scrum_master, scribe, info, TEAM_id) values (5, 5, '5/13/2016', '3/26/2017', 'Donald Moreno', 'John Carpenter', 'Nam tristique tortor eu pede.', 1);
-insert into MBDForm (id, More, Better, Different, SPRINT_id, STUDENT_id) values (1, 'Vestibulum sed magna at nunc commodo placerat. Praesent blandit. Nam nulla. Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus. In est risus, auctor sed, tristique in, tempus sit amet, sem. Fusce consequat.', 'In hac habitasse platea dictumst. Aliquam augue quam, sollicitudin vitae, consectetuer eget, rutrum at, lorem. Integer tincidunt ante vel ipsum.', 'Nulla tempus. Vivamus in felis eu sapien cursus vestibulum. Proin eu mi. Nulla ac enim. In tempor, turpis nec euismod scelerisque, quam turpis adipiscing lorem, vitae mattis nibh ligula nec sem. Duis aliquam convallis nunc. Proin at turpis a pede posuere nonummy. Integer non velit. Donec diam neque, vestibulum eget, vulputate ut, ultrices vel, augue.', 1, 1);
+insert into SPRINT (id, sprint_number, start_date, end_date, scrum_master, scribe, info, TEAM_id) values (1, 1, '2016-04-19 22:02:37', '2017-09-23 16:04:27', 'Corette Boschmann', 'Pepita Sambrok', 'Vivamus vel nulla eget eros elementum pellentesque.', 1);
+insert into SPRINT (id, sprint_number, start_date, end_date, scrum_master, scribe, info, TEAM_id) values (2, 2, '2016-02-01 08:06:04', '2016-06-15 12:33:21', 'Gayelord Lowre', 'Ondrea Lilburne', 'Morbi porttitor lorem id ligula.', 2);
+insert into SPRINT (id, sprint_number, start_date, end_date, scrum_master, scribe, info, TEAM_id) values (3, 3, '2016-04-15 06:29:54', '2016-07-03 22:39:58', 'Antonella Phibb', 'Lombard Langelaan', 'Nam tristique tortor eu pede.', 1);
+insert into SPRINT (id, sprint_number, start_date, end_date, scrum_master, scribe, info, TEAM_id) values (4, 4, '2016-01-24 11:57:04', '2017-04-05 14:00:01', 'Marice Rosenthal', 'Suzette Godin', 'Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.', 2);
+insert into SPRINT (id, sprint_number, start_date, end_date, scrum_master, scribe, info, TEAM_id) values (5, 5, '2016-10-31 00:33:39', '2017-02-15 06:27:24', 'Hastings Hand', 'Elvira Choules', 'Nunc purus.', 1);
+insert into SPRINT (id, sprint_number, start_date, end_date, scrum_master, scribe, info, TEAM_id) values (6, 6, '2016-12-19 03:35:12', '2016-09-17 10:03:26', 'Jasper Allmann', 'Johny Fivey', 'Donec vitae nisi.', 2);
+insert into SPRINT (id, sprint_number, start_date, end_date, scrum_master, scribe, info, TEAM_id) values (7, 7, '2016-08-07 18:26:11', '2016-04-15 19:15:15', 'Barnebas Vedyasov', 'Georgine Carmen', 'Integer a nibh.', 1);
+insert into SPRINT (id, sprint_number, start_date, end_date, scrum_master, scribe, info, TEAM_id) values (8, 8, '2016-05-11 06:55:18', '2016-07-09 14:47:50', 'Guthry Goutcher', 'Benito Parriss', 'Nam congue, risus semper porta volutpat, quam pede lobortis ligula, sit amet eleifend pede libero quis orci.', 2);
+insert into SPRINT (id, sprint_number, start_date, end_date, scrum_master, scribe, info, TEAM_id) values (9, 9, '2016-05-19 17:46:08', '2017-02-19 01:57:52', 'Jard Pengilley', 'Abelard MacDowal', 'Donec odio justo, sollicitudin ut, suscipit a, feugiat et, eros.', 1);
+insert into SPRINT (id, sprint_number, start_date, end_date, scrum_master, scribe, info, TEAM_id) values (10, 10, '2016-06-05 17:41:37', '2016-07-31 09:21:58', 'Bunny Grayer', 'Thorny Sandeson', 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.', 2);insert into MBDForm (id, More, Better, Different, SPRINT_id, STUDENT_id) values (1, 'Vestibulum sed magna at nunc commodo placerat. Praesent blandit. Nam nulla. Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede. Morbi porttitor lorem id ligula. Suspendisse ornare consequat lectus. In est risus, auctor sed, tristique in, tempus sit amet, sem. Fusce consequat.', 'In hac habitasse platea dictumst. Aliquam augue quam, sollicitudin vitae, consectetuer eget, rutrum at, lorem. Integer tincidunt ante vel ipsum.', 'Nulla tempus. Vivamus in felis eu sapien cursus vestibulum. Proin eu mi. Nulla ac enim. In tempor, turpis nec euismod scelerisque, quam turpis adipiscing lorem, vitae mattis nibh ligula nec sem. Duis aliquam convallis nunc. Proin at turpis a pede posuere nonummy. Integer non velit. Donec diam neque, vestibulum eget, vulputate ut, ultrices vel, augue.', 1, 1);
 insert into MBDForm (id, More, Better, Different, SPRINT_id, STUDENT_id) values (2, 'Quisque porta volutpat erat. Quisque erat eros, viverra eget, congue eget, semper rutrum, nulla. Nunc purus. Phasellus in felis. Donec semper sapien a libero. Nam dui. Proin leo odio, porttitor id, consequat in, consequat ut, nulla. Sed accumsan felis. Ut at dolor quis odio consequat varius. Integer ac leo.', 'Praesent blandit. Nam nulla.', 'Cras mi pede, malesuada in, imperdiet et, commodo vulputate, justo. In blandit ultrices enim. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Proin interdum mauris non ligula pellentesque ultrices. Phasellus id sapien in sapien iaculis congue. Vivamus metus arcu, adipiscing molestie, hendrerit at, vulputate vitae, nisl.', 2, 2);
 insert into MBDForm (id, More, Better, Different, SPRINT_id, STUDENT_id) values (3, 'Morbi a ipsum.', 'Nulla nisl. Nunc nisl. Duis bibendum, felis sed interdum venenatis, turpis enim blandit mi, in porttitor pede justo eu massa. Donec dapibus. Duis at velit eu est congue elementum.', 'Maecenas ut massa quis augue luctus tincidunt. Nulla mollis molestie lorem. Quisque ut erat. Curabitur gravida nisi at nibh. In hac habitasse platea dictumst. Aliquam augue quam, sollicitudin vitae, consectetuer eget, rutrum at, lorem. Integer tincidunt ante vel ipsum.', 3, 3);
 insert into MBDForm (id, More, Better, Different, SPRINT_id, STUDENT_id) values (4, 'Sed ante. Vivamus tortor. Duis mattis egestas metus.', 'Duis mattis egestas metus. Aenean fermentum. Donec ut mauris eget massa tempor convallis. Nulla neque libero, convallis eget, eleifend luctus, ultricies eu, nibh. Quisque id justo sit amet sapien dignissim vestibulum.', 'Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Etiam vel augue.', 4, 4);
@@ -354,32 +360,34 @@ insert into STUDENT (id, first_name, last_name, image, info, knowledge, skills_a
 insert into STUDENT (id, first_name, last_name, image, info, knowledge, skills_abilities, CLASS_id, TEAM_id, email, MBDForm_id, salt, hash, major) values (7, 'Cynthia', 'Fowler', 'vivamus', 'aliquam quis turpis eget elit sodales', 'a ipsum integer a nibh in quis justo', 'nulla sed vel enim sit amet', 1, 1, 'cfowler6@goo.gl', 7, 'ridiculus', 'HLze7sPOQvT1', 'ce');
 insert into STUDENT (id, first_name, last_name, image, info, knowledge, skills_abilities, CLASS_id, TEAM_id, email, MBDForm_id, salt, hash, major) values (8, 'Helen', 'Hill', 'molestie', 'nunc donec quis orci eget orci', 'mattis egestas metus aenean fermentum', 'pede ullamcorper augue a suscipit nulla elit ac', 1, 1, 'hhill7@spotify.com', 8, 'vel', 'HFuYkUCffk', 'env');
 insert into STUDENT (id, first_name, last_name, image, info, knowledge, skills_abilities, CLASS_id, TEAM_id, email, MBDForm_id, salt, hash, major) values (9, 'Gregory', 'Burton', 'metus', 'mauris sit amet eros suspendisse accumsan tortor quis turpis', 'erat tortor sollicitudin mi sit amet lobortis', 'lectus in est risus auctor', 1, 1, 'gburton8@forbes.com', 9, 'rhoncus', 'a9yV23FJp', 'cse');
-insert into STUDENT (id, first_name, last_name, image, info, knowledge, skills_abilities, CLASS_id, TEAM_id, email, MBDForm_id, salt, hash, major) values (10, 'Paul', 'Webb', 'vivamus', 'metus sapien ut nunc vestibulum ante ipsum', 'blandit nam nulla integer pede', 'diam erat fermentum justo nec condimentum neque sapien', 1, 2, 'pwebb9@ustream.tv', 10, 'bibendum', 'pfWJXzEanA', 'ee');
-insert into HLA_FOCUS (focus_name, STUDENT_id, id) values ('leader', 1, 1);
-insert into HLA_FOCUS (focus_name, STUDENT_id, id) values ('finisher', 2, 2);
-insert into HLA_FOCUS (focus_name, STUDENT_id, id) values ('thinker', 3, 3);
-insert into HLA_FOCUS (focus_name, STUDENT_id, id) values ('leader', 4, 4);
-insert into HLA_FOCUS (focus_name, STUDENT_id, id) values ('finisher', 5, 5);
-insert into HLA_FOCUS (focus_name, STUDENT_id, id) values ('thinker', 6, 6);
-insert into HLA_FOCUS (focus_name, STUDENT_id, id) values ('leader', 7, 7);
-insert into HLA_FOCUS (focus_name, STUDENT_id, id) values ('finisher', 8, 8);
-insert into HLA_FOCUS (focus_name, STUDENT_id, id) values ('thinker', 9, 9);
-insert into HLA_FOCUS (focus_name, STUDENT_id, id) values ('leader', 10, 10);
-insert into HLA_FOCUS (focus_name, STUDENT_id, id) values ('finisher', 1, 11);
-insert into HLA_FOCUS (focus_name, STUDENT_id, id) values ('thinker', 2, 12);
-insert into HLA_FOCUS (focus_name, STUDENT_id, id) values ('leader', 3, 13);
-insert into HLA_FOCUS (focus_name, STUDENT_id, id) values ('finisher', 4, 14);
-insert into HLA_FOCUS (focus_name, STUDENT_id, id) values ('thinker', 5, 15);
-insert into HLA_FOCUS (focus_name, STUDENT_id, id) values ('leader', 6, 16);
-insert into HLA_FOCUS (focus_name, STUDENT_id, id) values ('finisher', 7, 17);
-insert into HLA_FOCUS (focus_name, STUDENT_id, id) values ('thinker', 8, 18);
-insert into HLA_FOCUS (focus_name, STUDENT_id, id) values ('leader', 9, 19);
-insert into HLA_FOCUS (focus_name, STUDENT_id, id) values ('finisher', 10, 20);
+insert into STUDENT (id, first_name, last_name, image, info, knowledge, skills_abilities, CLASS_id, TEAM_id, email, MBDForm_id, salt, hash, major) values
+                    (10,"Rupal","Sanghavi","image","I love to code.","Coding","Coding",1,2,"test@gmail.com",10,"$2a$10$7Dst8pZHelwgemSuGWn04A==","$2a$10$7Dst8pZHelwgemSuGWn04.cmyHa/D1PiOTdhq5/6eHDvsvA970O.i","cse");
+insert into HLA_FOCUS (focus_name, STUDENT_id, id) values ('Communication', 1, 1);
+insert into HLA_FOCUS (focus_name, STUDENT_id, id) values ('Problem Solving', 2, 2);
+insert into HLA_FOCUS (focus_name, STUDENT_id, id) values ('Strategic Perspective', 3, 3);
+insert into HLA_FOCUS (focus_name, STUDENT_id, id) values ('Ethics and Integrity', 4, 4);
+insert into HLA_FOCUS (focus_name, STUDENT_id, id) values ('Innovative Spirit', 5, 5);
+insert into HLA_FOCUS (focus_name, STUDENT_id, id) values ('Intentional Learner', 6, 6);
+insert into HLA_FOCUS (focus_name, STUDENT_id, id) values ('Relationship Development', 7, 7);
+insert into HLA_FOCUS (focus_name, STUDENT_id, id) values ('Directive Leadership', 8, 8);
+insert into HLA_FOCUS (focus_name, STUDENT_id, id) values ('Champions Effective Processes', 9, 9);
+insert into HLA_FOCUS (focus_name, STUDENT_id, id) values ('Self Awareness', 10, 10);
+insert into HLA_FOCUS (focus_name, STUDENT_id, id) values ('Diversity and Difference', 1, 11);
+insert into HLA_FOCUS (focus_name, STUDENT_id, id) values ('Engaging Leadership', 2, 12);
+insert into HLA_FOCUS (focus_name, STUDENT_id, id) values ('Communication', 3, 13);
+insert into HLA_FOCUS (focus_name, STUDENT_id, id) values ('Problem Solving', 4, 14);
+insert into HLA_FOCUS (focus_name, STUDENT_id, id) values ('Strategic Perspective', 5, 15);
+insert into HLA_FOCUS (focus_name, STUDENT_id, id) values ('Ethics and Integrity', 6, 16);
+insert into HLA_FOCUS (focus_name, STUDENT_id, id) values ('Innovative Spirit', 7, 17);
+insert into HLA_FOCUS (focus_name, STUDENT_id, id) values ('Intentional Learner', 8, 18);
+insert into HLA_FOCUS (focus_name, STUDENT_id, id) values ('Relationship Development', 9, 19);
+insert into HLA_FOCUS (focus_name, STUDENT_id, id) values ('Directive Leadership', 10, 20);
 insert into TEAM_CHARTER (id, ideating, decision_making, disputes, conflicts, fun, team_purpose, stakeholders, mission, TEAM_id) values (1, 'Curabitur convallis. Duis consequat dui nec nisi volutpat eleifend.', 'Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Etiam vel augue. Vestibulum rutrum rutrum neque. Aenean auctor gravida sem.', 'In eleifend quam a odio.', 'Duis bibendum, felis sed interdum venenatis, turpis enim blandit mi, in porttitor pede justo eu massa. Donec dapibus. Duis at velit eu est congue elementum.', 'Nunc purus. Phasellus in felis. Donec semper sapien a libero. Nam dui.', 'Donec odio justo, sollicitudin ut, suscipit a, feugiat et, eros. Vestibulum ac est lacinia nisi venenatis tristique.', 'Curabitur in libero ut massa volutpat convallis. Morbi odio odio, elementum eu, interdum eu, tincidunt in, leo. Maecenas pulvinar lobortis est. Phasellus sit amet erat.', 'Phasellus id sapien in sapien iaculis congue. Vivamus metus arcu, adipiscing molestie, hendrerit at, vulputate vitae, nisl.', 1);
 insert into TEAM_CHARTER (id, ideating, decision_making, disputes, conflicts, fun, team_purpose, stakeholders, mission, TEAM_id) values (2, 'Aliquam non mauris.', 'Aliquam erat volutpat.', 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Proin risus.', 'Curabitur in libero ut massa volutpat convallis. Morbi odio odio, elementum eu, interdum eu, tincidunt in, leo. Maecenas pulvinar lobortis est. Phasellus sit amet erat.', 'Maecenas tristique, est et tempus semper, est quam pharetra magna, ac consequat metus sapien ut nunc. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Mauris viverra diam vitae quam. Suspendisse potenti. Nullam porttitor lacus at turpis.', 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Proin risus.', 'Vivamus vel nulla eget eros elementum pellentesque.', 'Duis ac nibh. Fusce lacus purus, aliquet at, feugiat non, pretium quis, lectus.', 2);
-insert into STAFF (id, admin, last_name, first_name, email) values (1, 1, 'Johnston', 'Robert', 'guo@smu.edu');
-insert into STAFF (id, admin, last_name, first_name, email) values (2, 1, 'Palmer', 'Marilyn', 'rupal@smu.edu');
-insert into STAFF (id, admin, last_name, first_name, email) values (3, 1, 'Shaw', 'Gloria','david@smu.edu');
+insert into STAFF (id, admin, last_name, first_name, hash, salt, email) values (1, 1, 'Furmedge', 'Wang', '7ae7fe8c91483423441ce20769806494448b6fa7', 'porttitor', 'wcrop0@weibo.com');
+insert into STAFF (id, admin, last_name, first_name, hash, salt, email) values (2, 1, 'Spitell', 'Vikky', 'ac070f6574ae04bd942b6b47806d462770d37096', 'dictumst', 'vmcgroarty1@apple.com');
+insert into STAFF (id, admin, last_name, first_name, hash, salt, email) values (3, 1, 'Cookson', 'Biddy', '72cce212cfce41b21329933c28a98e835a3fa22c', 'vitae', 'bpaszak2@fda.gov');
+INSERT into STAFF (email,salt,hash) VALUES ('khubbard@lyle.smu.edu','$2a$10$ZeSI0uSQv9OUdqlgF.GL3Q==','$2a$10$ZeSI0uSQv9OUdqlgF.GL3OmnnqscVTXeRmU/nqJNdZKZkEiwDU5/a');
 insert into ANNOUNCEMENTS (title, body, create_datetime, priority, creator, id, STAFF_id) values ('cum sociis', 'Integer ac leo.', '2016-09-08 09:29:30', 1, 'David Howell', 1, 1);
 insert into ANNOUNCEMENTS (title, body, create_datetime, priority, creator, id, STAFF_id) values ('lorem', 'Ut tellus.', '2017-01-05 10:05:39', 2, 'Larry Sims', 2, 2);
 insert into ANNOUNCEMENTS (title, body, create_datetime, priority, creator, id, STAFF_id) values ('natoque penatibus', 'Duis bibendum.', '2016-11-12 23:55:19', 3, 'Kathleen Hansen', 3, 3);
