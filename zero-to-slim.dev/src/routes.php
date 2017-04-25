@@ -897,10 +897,9 @@ $app->put('/resources',function($request,$response,$args){
 $app->post('/resources/delete',function($request,$response,$args){
   $db = $this->dbConn;
   $resource = $request->getParsedBody();
-
-  $id = $resource['id'];
+  $link = $resource['link'];
   $sql = "DELETE FROM RESOURCES
-          WHERE id = '$id'";
+          WHERE link = '$link'";
   $q = $db->query($sql);
   $status['status'] = "success";
   return $response->write(json_encode($status));
