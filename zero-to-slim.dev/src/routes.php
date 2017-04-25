@@ -76,6 +76,33 @@ $app->post('/faculty/add', function($request,$response,$args){
     $id = $obj['id'];
     return $response->write(json_encode($id));
 });
+$app->post('/focus', function ($request, $response, $args) {
+  try{
+    $db = $this->dbConn;
+    $data = $request->getParsedBody();
+    $years = $data['year'];
+    $in = implode(", ", $years);
+    $semesters = $data['semester'];
+    $in2 = "'".implode("', '", $semesters)."'";
+    $sql = "SELECT COUNT(s.id) as value, hf.focus_name as name
+            FROM STUDENT s
+            INNER JOIN HLA_FOCUS hf
+            INNER JOIN CLASS c
+            WHERE s.CLASS_id = c.id
+            AND hf.STUDENT_id = s.id
+            AND year IN ($in)
+            AND semester IN($in2)
+            GROUP BY hf.focus_name";
+    $q = $db->query($sql);
+    $check = $q->fetchAll(PDO::FETCH_ASSOC);
+    return $response->write(json_encode($check));
+
+  }
+  catch(PDOException $e){
+    print "Error!: " . $e->getMessage() . "<br/>";
+    $this->notFoundHandler;
+  }
+});
 $app->post('/teamroles', function ($request, $response, $args) {
   try{
     $db = $this->dbConn;
