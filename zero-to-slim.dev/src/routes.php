@@ -341,9 +341,11 @@ $app->post('/login',function($request,$response,$args){
     $password = $data['password'];
 
     $success = array();
-    $sql = "SELECT hash, salt
-            FROM STUDENT
-            WHERE email = '$username';";
+    $sql = "SELECT s.id, s.hash, s.salt, s.TEAM_id
+            FROM STUDENT s
+            INNER JOIN TEAM t
+            WHERE email = '$username'
+            AND s.TEAM_id = t.id;";
     $q = $db->query($sql);
     $array = $q->fetch(PDO::FETCH_ASSOC);
     //check if student or admin
@@ -367,23 +369,43 @@ $app->post('/login',function($request,$response,$args){
     }
     else{
       $success['admin'] = false;
+      $TEAM_id = $array['TEAM_id'];
     }
     //check if password is correct
     $hash = $array['hash'];
     $salt = $array['salt'];
+    // $TEAM_id = $array['TEAM_id'];
     $token = strtr(base64_encode(mcrypt_create_iv(16,MCRYPT_DEV_URANDOM)),'+','.');
     if(hash_equals($hash,crypt($password,$salt))) // Valid
     {
-      $_SESSION["authenticated"] = true;
       $success['authenticated'] = true;
-      $_SESSION['username'] = $username;
+      if($success['admin'] == false)
+        {
+          $sql = "UPDATE SESSIONS
+                SET authenticated = 1,
+                username = '$username',
+                team_id = '$TEAM_id'
+                WHERE id = 1";}
+      else{
+        $sql = "UPDATE SESSIONS
+                SET authenticated = 1,
+                username = '$username'
+                WHERE id = 1";
+      }
+      $db->query($sql);
+      #$_SESSION["authenticated"] = true;
+      // $_SESSION['username'] = $username;
       return $response->write(json_encode($success));
     }
     else //incorrect password
     {
-      $_SESSION["authenticated"] = false;
+      // $_SESSION["authenticated"] = false;
       $success['authenticated'] = false;
-      session_destroy();
+      // $sql = "INSERT INTO SESSIONS
+      //         (id, authenticated,username, team_id)
+      //         VALUES (1,$success)";
+      // $db->query($sql);
+      // session_destroy();
       return $response->write(json_encode($success));
     }
 
