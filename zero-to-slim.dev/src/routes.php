@@ -458,8 +458,7 @@ $app->post('/faculty/delete',function($request,$response,$args){
 
 $app->get('/forms',function($request,$response,$args){
   $db = $this->dbConn;
-  // $email = $_SESSION['username'];
-  $email = "test@gmail.com";
+  $email = $_SESSION['username'];
   $sql = "SELECT t.id
           FROM STUDENT s
           INNER JOIN TEAM t
@@ -1011,7 +1010,6 @@ $app->get('/sprints/{quantity}',function($request,$response,$args){
   $db = $this->dbConn;
   $quantity = $request->getAttribute('quantity');
   $email = $_SESSION['username'];
-  #$email = "khubbard@lyle.smu.edu";
   $sql = "SELECT t.id
           FROM STUDENT s
           INNER JOIN TEAM t
