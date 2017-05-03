@@ -405,7 +405,6 @@ $app->post('/login',function($request,$response,$args){
     if(hash_equals($hash,crypt($password,$salt))) // Valid
     {
       $success['authenticated'] = true;
-<<<<<<< HEAD
       if($success['admin'] == false)
         {
           $sql = "INSERT INTO SESSIONS
@@ -429,28 +428,15 @@ $app->post('/login',function($request,$response,$args){
       $db->query($sql);
       #$_SESSION["authenticated"] = true;
       // $_SESSION['username'] = $username;
-      return $response->write(json_encode($success));
-=======
-      $_SESSION['username'] = $username;
 
       return $response->withJson($success);
->>>>>>> david/json
     }
     else //incorrect password
     {
       // $_SESSION["authenticated"] = false;
       $success['authenticated'] = false;
-<<<<<<< HEAD
-      // $sql = "INSERT INTO SESSIONS
-      //         (id, authenticated,username, team_id)
-      //         VALUES (1,$success)";
-      // $db->query($sql);
-      // session_destroy();
-      return $response->write(json_encode($success));
-=======
-      session_destroy();
+
       return $response->withJson($success);
->>>>>>> david/json
     }
 
 });
@@ -470,12 +456,8 @@ $app->get('/checkauth',function($request,$response,$args){
       $auth = 1;
       $success['authenticated'] = true;
     }
-<<<<<<< HEAD
-   return $response->write(json_encode($success));
-=======
-   else {}
-   return $response->withJson($_SESSION);
->>>>>>> david/json
+
+   return $response->withJson($success);
 
 });
 $app->post('/logout',function($request,$response,$args){
@@ -1065,10 +1047,8 @@ $app->put('/profilepic',function($request,$response,$args){
           WHERE email = '$email'";
   echo $sql;
   $q = $db->query($sql);
-<<<<<<< HEAD
-=======
+
   return $response->withJson($image_obj);
->>>>>>> david/json
 
 });
 $app->get('/teamsprints/{team_id}',function($request,$response,$args){
