@@ -68,7 +68,7 @@ $app->post('/faculty/add', function($request,$response,$args){
     $q = $db->query($sql);
     $obj = $q->fetch(PDO::FETCH_ASSOC);
     $id = $obj['id'];
-    return $response->write(json_encode($id));
+    return $response->withJson($id);
 });
 $app->post('/focus', function ($request, $response, $args) {
   try{
@@ -89,7 +89,7 @@ $app->post('/focus', function ($request, $response, $args) {
             GROUP BY hf.focus_name";
     $q = $db->query($sql);
     $check = $q->fetchAll(PDO::FETCH_ASSOC);
-    return $response->write(json_encode($check));
+    return $response->withJson($check);
 
   }
   catch(PDOException $e){
@@ -118,7 +118,7 @@ $app->post('/teamroles', function ($request, $response, $args) {
             GROUP BY tr.name";
     $q = $db->query($sql);
     $check = $q->fetchAll(PDO::FETCH_ASSOC);
-    return $response->write(json_encode($check));
+    return $response->withJson($check);
 
   }
   catch(PDOException $e){
@@ -143,7 +143,7 @@ $app->post('/majors', function ($request, $response, $args) {
             GROUP BY major";
     $q = $db->query($sql);
     $check = $q->fetchAll(PDO::FETCH_ASSOC);
-    return $response->write(json_encode($check));
+    return $response->withJson($check);
 
   }
   catch(PDOException $e){
@@ -159,7 +159,7 @@ $app->get('/sections', function ($request, $response, $args) {
             FROM CLASS;';
     $q = $db->query($sql);
     $check = $q->fetchAll(PDO::FETCH_ASSOC);
-    return $response->write(json_encode($check));
+    return $response->withJson($check);
   }
   catch(PDOException $e){
     $this->notFoundHandler;
@@ -177,7 +177,7 @@ $app->get('/sections/{section}', function ($request, $response, $args) {
     $q = $db->query($sql);
     $check = $q->fetchAll(PDO::FETCH_ASSOC);
     $obj['students'] = $check;
-    return $response->write(json_encode($obj));
+    return $response->withJson($obj);
   }
   catch(PDOException $e){
     $this->notFoundHandler;
@@ -231,7 +231,7 @@ $app->get('/team/{team_id}', function($request,$response,$args){
     $section = $q->fetch(PDO::FETCH_ASSOC);
     $check['members'] = $members;
     $check['section'] = $section['section'];
-    return $response->write(json_encode($check));
+    return $response->withJson($check);
   }
   catch(PDOException $e){
     $this->notFoundHandler;
@@ -258,7 +258,7 @@ $app->get('/teams',function($request,$response,$args){
       $obj['teams'][$i]['members'] = $members;
       $i += 1;
     }
-    return $response->write(json_encode($obj));
+    return $response->withJson($obj);
   }
   catch(PDOException $e){
     $this->notFoundHandler;
@@ -272,7 +272,6 @@ $app->post('/student/add', function($request,$response,$args){
   $email = $data['email'];
   $section = $data['section'];
   $now = date('Y');
-  echo "";
   $month = date('m');
   if($month < 5){
     $semester = "Spring";
@@ -329,7 +328,7 @@ $app->post('/registration',function($request,$response,$args)
     $success = "true";
     $str = array("registered" => $success);
     //echo $success;
-    return $response->write(json_encode($str));
+    return $response->withJson($str);
   }
 
 });
@@ -359,7 +358,7 @@ $app->post('/login',function($request,$response,$args){
         $msg = "No existing account. ";
         $success['authenticated'] = false;
         $success['msg'] = $msg;
-        return $response->write(json_encode($success));
+        return $response->withJson($success);
       }
       else{
         $success['admin'] = true;
@@ -377,14 +376,15 @@ $app->post('/login',function($request,$response,$args){
       $_SESSION["authenticated"] = true;
       $success['authenticated'] = true;
       $_SESSION['username'] = $username;
-      return $response->write(json_encode($success));
+
+      return $response->withJson($success);
     }
     else //incorrect password
     {
       $_SESSION["authenticated"] = false;
       $success['authenticated'] = false;
       session_destroy();
-      return $response->write(json_encode($success));
+      return $response->withJson($success);
     }
 
 });
@@ -395,7 +395,7 @@ $app->get('/checkauth',function($request,$response,$args){
       $auth = 1;
     }
    else {}
-   return $response->write(json_encode($_SESSION));
+   return $response->withJson($_SESSION);
 
 });
 $app->post('/logout',function($request,$response,$args){
@@ -423,7 +423,7 @@ $app->post('/faculty/delete',function($request,$response,$args){
       $q = $db->query($sql) ;
       $q = $db->query($sql2);
       $success['status'] = "success";
-      return $response->write(json_encode($success));
+      return $response->withJson($success);
     }
     catch(PDOException $e){
       print "Error!: " . $e->getMessage() . "<br/>";
@@ -489,7 +489,7 @@ $app->get('/forms',function($request,$response,$args){
   else{
     $to_return['mbd'] = false;
   }
-  return $response->write(json_encode($to_return));
+  return $response->withJson($to_return);
 });
 $app->get('/forms/team-charter/{team_id}',function($request,$response,$args){
   $db = $this->dbConn;
@@ -543,7 +543,7 @@ $app->get('/forms/team-charter/{team_id}',function($request,$response,$args){
   $obj['stakeholders'] = $team['stakeholders'];
   $obj['mission'] = $team['mission'];
 
-  return $response->write(json_encode($obj));
+  return $response->withJson($obj);
 });
 
 $app->post('/forms/team-charter/{team_id}',function($request,$response,$args){
@@ -570,7 +570,7 @@ $app->post('/forms/team-charter/{team_id}',function($request,$response,$args){
             WHERE TEAM_id = $TEAM_id";
     $q = $db->query($sql);
     $success['messages'] = 'success!!!';
-    return $response->write(json_encode($success));
+    return $response->withJson($success);
   }
   catch(PDOException $e){
     print "Error!: " . $e->getMessage() . "<br/>";
@@ -590,7 +590,7 @@ $app->get('/forms/t_mbd/{team_id}/{sprint_num}',function($request,$response,$arg
     $mbd_adj['more'] = $mbd['More'];
     $mbd_adj['better'] = $mbd['Better'];
     $mbd_adj['different'] = $mbd['Different'];
-    return $response->write(json_encode($mbd_adj));
+    return $response->withJson($mbd_adj);
   }
   catch(PDOException $e){
     print "Error!: " . $e->getMessage() . "<br/>";
@@ -627,7 +627,6 @@ $app->get('/announcements/{quantity}',function($request,$response,$args){
     $sql = "SELECT *
             FROM ANNOUNCEMENTS";
     $q = $db->query($sql);
-    echo $sql;
     $announcements = $q->fetchAll(PDO::FETCH_ASSOC);
     $annArr = [];
     foreach($announcements as $announcement){
@@ -643,7 +642,7 @@ $app->get('/announcements/{quantity}',function($request,$response,$args){
     }
     $obj = array();
     $obj['announcements'] = $annArr;
-    return $response->write(json_encode($obj));
+    return $response->withJson($obj);
   }
   catch(PDOException $e){
     print "Error!: " . $e->getMessage() . "<br/>";
@@ -687,7 +686,7 @@ $app->post('/announcements/create',function($request,$response,$args){
   $return['title'] = $announcement['title'];
   $return['text'] = $announcement['body'];
   $return['priority'] = $announcement['priority'];
-  return $response->write(json_encode($return));
+  return $response->withJson($return);
 
 });
 $app->get('/faculty',function($request,$response,$args){
@@ -726,7 +725,7 @@ $app->get('/faculty',function($request,$response,$args){
     // array_push($obj,$admin_arr);
     // // $obj[0]= $faculty_arr;
     // // $obj[1]= $admin_arr;
-    return $response->write(json_encode($obj));
+    return $response->withJson($obj);
 
 });
 $app->post('/students/delete',function($request,$response,$args){
@@ -743,7 +742,7 @@ $app->post('/students/delete',function($request,$response,$args){
   $q = $db->query($sql2);
   $q = $db->query($sql);
   $success['status'] = "success";
-  return $response->write(json_encode($success));
+  return $response->withJson($success);
 });
 $app->get('/calendar/{team_id}',function($request,$response,$args){
     $db = $this->dbConn;
@@ -763,7 +762,7 @@ $app->get('/calendar/{team_id}',function($request,$response,$args){
     }
 
     $obj['Events'] = $events_adj;
-    return $response->write(json_encode($obj));
+    return $response->withJson($obj);
   });
 $app->post('/calendar/{team_id}',function($request,$response,$args){
   $db = $this->dbConn;
@@ -796,7 +795,7 @@ $app->post('/calendar/{team_id}',function($request,$response,$args){
   $event_adj['description'] = $event['description'];
   $event_adj['creator'] = $event['creator'];
   $event_adj['created_date'] = $event['create_date'];
-  return $response->write(json_encode($event_adj));
+  return $response->withJson($event_adj);
 });
 $app->get('/calendar/{month}/{team_id}',function($request,$response,$args){
   $db = $this->dbConn;
@@ -821,7 +820,7 @@ $app->get('/calendar/{month}/{team_id}',function($request,$response,$args){
     $event_adj['event_creator'] = $event['creator'];
     array_push($events_adj,$event_adj);
   }
-  return $response->write(json_encode($events_adj));
+  return $response->withJson($events_adj);
 });
 $app->get('/calendar/{month}/{team_name}/{event_id}',function($request,$response,$args){
   $db = $this->dbConn;
@@ -838,7 +837,7 @@ $app->get('/calendar/{month}/{team_name}/{event_id}',function($request,$response
   $event_adj['event_description'] = $event['description'];
   $event_adj['event_createdate'] = $event['create_date'];
   $event_adj['event_creator'] = $event['creator'];
-  return $response->write(json_encode($event_adj));
+  return $response->withJson($event_adj);
 });
 $app->get('/resources',function($request,$response,$args){
   $db = $this->dbConn;
@@ -856,7 +855,7 @@ $app->get('/resources',function($request,$response,$args){
     $resources = $q->fetchAll(PDO::FETCH_ASSOC);
     $obj_toreturn[$category] = $resources;
   }
-  return $response->write(json_encode($obj_toreturn));
+  return $response->withJson($obj_toreturn);
 });
 $app->post('/resources',function($request,$response,$args){
   $db = $this->dbConn;
@@ -874,7 +873,7 @@ $app->post('/resources',function($request,$response,$args){
           LIMIT 1";
   $q = $db->query($sql);
   $resource_last_created = $q->fetch(PDO::FETCH_ASSOC);
-  return $response->write(json_encode($resource_last_created));
+  return $response->withJson($resource_last_created);
 });
 $app->put('/resources',function($request,$response,$args){
   $db = $this->dbConn;
@@ -892,7 +891,7 @@ $app->put('/resources',function($request,$response,$args){
           WHERE id = '$id'";
   $q = $db->query($sql);
   $status['status'] = "success";
-  return $response->write(json_encode($status));
+  return $response->withJson($status);
 });
 $app->post('/resources/delete',function($request,$response,$args){
   $db = $this->dbConn;
@@ -902,7 +901,7 @@ $app->post('/resources/delete',function($request,$response,$args){
           WHERE link = '$link'";
   $q = $db->query($sql);
   $status['status'] = "success";
-  return $response->write(json_encode($status));
+  return $response->withJson($status);
 });
 $app->get('/student/{student_id}',function($request,$response,$args){
   $db = $this->dbConn;
@@ -954,7 +953,7 @@ $app->get('/student/{student_id}',function($request,$response,$args){
     array_push($focuses_adj, $focus);
   }
   $student_adj['hla_focus'] = $focuses_adj;
-  return $response->write(json_encode($student_adj));
+  return $response->withJson($student_adj);
 });
 $app->put('/profilepic',function($request,$response,$args){
   $db = $this->dbConn;
@@ -966,7 +965,7 @@ $app->put('/profilepic',function($request,$response,$args){
           SET image = '$image'
           WHERE email = '$email'";
   $q = $db->query($sql);
-  return $response->write(json_encode($image_obj));
+  return $response->withJson($image_obj);
 
 });
 $app->get('/teamsprints/{team_id}',function($request,$response,$args){
@@ -997,13 +996,12 @@ $app->get('/teamsprints/{team_id}',function($request,$response,$args){
     array_push($sprints_adj,$sprint_adj);
   }
   $obj['sprints'] = $sprints_adj;
-  return $response->write(json_encode($obj));
+  return $response->withJson($obj);
 });
 $app->get('/sprints/{quantity}',function($request,$response,$args){
   $db = $this->dbConn;
   $quantity = $request->getAttribute('quantity');
-  $email = 'test@gmail.com';
-  #$email = "khubbard@lyle.smu.edu";
+  $email = $_SESSION['username'];
   $sql = "SELECT t.id
           FROM STUDENT s
           INNER JOIN TEAM t
@@ -1055,7 +1053,7 @@ $app->get('/sprints/{quantity}',function($request,$response,$args){
     array_push($sprints_adj,$sprint_adj);
   }
   $obj['sprints'] = $sprints_adj;
-  return $response->write(json_encode($obj));
+  return $response->withJson($obj);
 
 });
 $app->get('/sprint/{sprint_id}',function($request,$response,$args){
@@ -1068,7 +1066,7 @@ $app->get('/sprint/{sprint_id}',function($request,$response,$args){
             WHERE id = '$sprint_id'";
     $q = $db->query($sql);
     $sprint = $q->fetchAll(PDO::FETCH_ASSOC);
-    return $response->write(json_encode($sprint));
+    return $response->withJson($sprint);
 
   }
   catch(PDOException $e){
@@ -1109,6 +1107,6 @@ $app->post('/sprint',function($request,$response,$args){
           '$end_date','$team_id')";
   $q = $db->query($sql);
   $status['status'] = 'success';
-  return $response->write(json_encode($status));
+  return $response->withJson($status);
 
 });
