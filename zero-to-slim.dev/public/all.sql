@@ -343,6 +343,7 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
 
 insert into CLASS (id, year, semester, section) values (1, 2015, 'Fall', 1);
+insert into CLASS (id, year, semester, section) values (2, 2017, 'Spring', 1);
 insert into TEAM (id, name, logo, blog, charterCompleted,  TEAM_CHARTER_id, CLASS_id ) values (1, 'Aufderhar-Friesen', 'http://dummyimage.com/238x127.jpg/ff4444/ffffff', 'In est risus, auctor sed, tristique in, tempus sit amet, sem.', false, 2, 1);
 insert into TEAM (id, name, logo, blog, charterCompleted,  TEAM_CHARTER_id, CLASS_id ) values (2, 'Wolff LLC', 'http://dummyimage.com/224x107.bmp/5fa2dd/ffffff', 'Fusce congue, diam id ornare imperdiet, sapien urna pretium nisl, ut volutpat sapien arcu sed augue.', true, 1, 1);
 insert into SPRINT (id, sprint_number, start_date, end_date, scrum_master, scribe, info, TEAM_id) values (1, 1, '2016-04-19 22:02:37', '2017-09-23 16:04:27', 'Corette Boschmann', 'Pepita Sambrok', 'Vivamus vel nulla eget eros elementum pellentesque.', 1);

@@ -1,7 +1,7 @@
 <?php
 
 header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST,GET,OPTIONS');
+header('Access-Control-Allow-Methods: POST,PUT,GET,OPTIONS');
 header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept');
 
 
@@ -272,9 +272,8 @@ $app->post('/student/add', function($request,$response,$args){
   $email = $data['email'];
   $section = $data['section'];
   $now = date('Y');
-  echo "";
   $month = date('m');
-  if($month < 5){
+  if($month <= 5){
     $semester = "Spring";
   }
   else{
@@ -290,8 +289,8 @@ $app->post('/student/add', function($request,$response,$args){
   $sql2 = "INSERT INTO STUDENT
          (first_name,last_name,email,CLASS_id)
          VALUES ('$firstName','$lastName','$email','$class_id')";
+  echo $sql;
   $q = $db->query($sql2);
-  echo $month;
 
 });
 $app->post('/newstudent', function($request,$response,$args){
@@ -305,6 +304,34 @@ $app->post('/newstudent', function($request,$response,$args){
             SET TEAM_id = '$team_id'
             WHERE id = '$student_id'";
     $db->query($sql);
+});
+$app->put('/newstudent', function($request,$response,$args){
+  $db = $this->dbConn;
+  $data = $request->getParsedBody();
+  $first_name = $data['first_name'];
+  $last_name = $data['last_name'];
+  $team_name = $data['team_name'];
+  $image = $data['image'];
+  $major = $data['major'];
+  $info = $data['info'];
+  $knowledge = $data['knowledge'];
+  $skills_abilities = $data['skills_abilities'];
+  $sql = "SELECT username
+          FROM SESSIONS
+          WHERE id = 1";
+  $q = $db->query($sql);
+  $array = $q->fetch(PDO::FETCH_ASSOC);
+  $email = $array['username'];
+  $sql = "UPDATE STUDENT
+          SET first_name = '$first_name'
+          last_name = '$last_name'
+          image = '$image'
+          info = '$info'
+          major = '$major'
+          knowledge = '$knowledge'
+          skills_abilities = '$skills_abilities'
+          WHERE email = '$email'";
+  $db->query($sql);
 });
 $app->post('/registration',function($request,$response,$args)
 {
