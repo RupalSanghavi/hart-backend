@@ -342,7 +342,6 @@ SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
 
-insert into SESSIONS (authenticated) values (0);
 insert into CLASS (id, year, semester, section) values (1, 2015, 'Fall', 1);
 insert into TEAM (id, name, logo, blog, charterCompleted,  TEAM_CHARTER_id, CLASS_id ) values (1, 'Aufderhar-Friesen', 'http://dummyimage.com/238x127.jpg/ff4444/ffffff', 'In est risus, auctor sed, tristique in, tempus sit amet, sem.', false, 2, 1);
 insert into TEAM (id, name, logo, blog, charterCompleted,  TEAM_CHARTER_id, CLASS_id ) values (2, 'Wolff LLC', 'http://dummyimage.com/224x107.bmp/5fa2dd/ffffff', 'Fusce congue, diam id ornare imperdiet, sapien urna pretium nisl, ut volutpat sapien arcu sed augue.', true, 1, 1);

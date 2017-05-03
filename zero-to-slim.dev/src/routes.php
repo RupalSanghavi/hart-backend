@@ -381,16 +381,23 @@ $app->post('/login',function($request,$response,$args){
       $success['authenticated'] = true;
       if($success['admin'] == false)
         {
-          $sql = "UPDATE SESSIONS
-                SET authenticated = 1,
-                username = '$username',
-                team_id = '$TEAM_id'
-                WHERE id = 1";}
+          $sql = "INSERT INTO SESSIONS
+          (id, authenticated, username, team_id)
+          values (1, 1,'$username','$TEAM_id')";
+          // $sql = "UPDATE SESSIONS
+          //       SET authenticated = 1,
+          //       username = '$username',
+          //       team_id = '$TEAM_id'
+          //       WHERE id = 1";
+        }
       else{
-        $sql = "UPDATE SESSIONS
-                SET authenticated = 1,
-                username = '$username'
-                WHERE id = 1";
+        $sql = "INSERT INTO SESSIONS
+        (id, authenticated, username)
+        values (1, 1,'$username')";
+        // $sql = "UPDATE SESSIONS
+        //         SET authenticated = 1,
+        //         username = '$username'
+        //         WHERE id = 1";
       }
       $db->query($sql);
       #$_SESSION["authenticated"] = true;
@@ -412,12 +419,21 @@ $app->post('/login',function($request,$response,$args){
 });
 $app->get('/checkauth',function($request,$response,$args){
    $auth = 0;
-   if(count($_SESSION) == 0){}
-   else if($_SESSION["authenticated"] == true){
+   $db = $this->dbConn;
+
+   $sql = "SELECT COUNT(*) as count
+           FROM SESSIONS";
+   $q = $db->query($sql);
+   $array = $q->fetch(PDO::FETCH_ASSOC);
+   $count = $array['count'];
+   if($count == 0){
+     $success['authenticated'] = false;
+   }
+   else {
       $auth = 1;
+      $success['authenticated'] = true;
     }
-   else {}
-   return $response->write(json_encode($_SESSION));
+   return $response->write(json_encode($success));
 
 });
 $app->post('/logout',function($request,$response,$args){
@@ -425,7 +441,11 @@ $app->post('/logout',function($request,$response,$args){
     // $data = $request->getParsedBody();
     // $username = $data['username'];
     // $password = $data['password'];
-    session_destroy();
+    $sql = "DELETE
+            FROM SESSIONS
+            WHERE id = 1";
+
+  $db->query($sql);
 });
 $app->post('/faculty/delete',function($request,$response,$args){
   try{
@@ -473,7 +493,12 @@ $app->post('/faculty/delete',function($request,$response,$args){
 
 $app->get('/forms',function($request,$response,$args){
   $db = $this->dbConn;
-  $email = $_SESSION['username'];
+  $sql = "SELECT username
+          FROM SESSIONS
+          WHERE id = 1";
+  $q = $db->query($sql);
+  $array = $q->fetch(PDO::FETCH_ASSOC);
+  $email = $array['username'];
   $sql = "SELECT t.id
           FROM STUDENT s
           INNER JOIN TEAM t
@@ -678,10 +703,15 @@ $app->post('/announcements/create',function($request,$response,$args){
   $title = $announcement['title'];
   $text = $announcement['text'];
   $priority = $announcement['priority'];
-  $id = $_SESSION['username'];
+  $sql = "SELECT username
+          FROM SESSIONS
+          WHERE id = 1";
+  $q = $db->query($sql);
+  $array = $q->fetch(PDO::FETCH_ASSOC);
+  $id = $array['username'];
   $sql = "SELECT first_name, last_name
           FROM STAFF
-          WHERE id = $id";
+          WHERE email = '$id'";
   $q = $db->query($sql);
   $creator_sep = $q->fetch(PDO::FETCH_ASSOC);
   $now = date('Y-m-d H:i:s');
@@ -983,12 +1013,17 @@ $app->put('/profilepic',function($request,$response,$args){
   // $arr = (array) $request->getAttribute("token");
   $image_obj = $request->getParsedBody();
   $image = $image_obj['image'];
-  $email = $_SESSION['username'];
+  $sql = "SELECT username
+          FROM SESSIONS
+          WHERE id = 1";
+  $q = $db->query($sql);
+  $array = $q->fetch(PDO::FETCH_ASSOC);
+  $email = $array['username'];
   $sql = "UPDATE STUDENT
           SET image = '$image'
           WHERE email = '$email'";
+  echo $sql;
   $q = $db->query($sql);
-  return $response->write(json_encode($image_obj));
 
 });
 $app->get('/teamsprints/{team_id}',function($request,$response,$args){
