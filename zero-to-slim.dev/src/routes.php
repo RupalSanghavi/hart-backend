@@ -4,13 +4,7 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST,GET,OPTIONS');
 header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept');
 
-// header("Access-Control-Allow-Headers: Content-Type");
-// header('Access-Control-Allow-Origin: *');
-//
-// header('Access-Control-Allow-Methods: GET, POST');
-//
-// header("Access-Control-Allow-Headers: X-Requested-With");
-// Routes
+
 $servername = "localhost";
 $username = "root";
 
@@ -395,7 +389,6 @@ $app->post('/login',function($request,$response,$args){
 
 });
 $app->get('/checkauth',function($request,$response,$args){
-   session_start();
    $auth = 0;
    if(count($_SESSION) == 0){}
    else if($_SESSION["authenticated"] == true){
@@ -903,10 +896,9 @@ $app->put('/resources',function($request,$response,$args){
 $app->post('/resources/delete',function($request,$response,$args){
   $db = $this->dbConn;
   $resource = $request->getParsedBody();
-
-  $id = $resource['id'];
+  $link = $resource['link'];
   $sql = "DELETE FROM RESOURCES
-          WHERE id = '$id'";
+          WHERE link = '$link'";
   $q = $db->query($sql);
   $status['status'] = "success";
   return $response->withJson($status);
@@ -1018,6 +1010,7 @@ $app->get('/sprints/{quantity}',function($request,$response,$args){
   $q = $db->query($sql);
   $team_id_obj = $q->fetch(PDO::FETCH_ASSOC);
   $team_id = $team_id_obj['id'];
+  // $team_name = $team_id_obj['name'];
   $sql = "SELECT *
           FROM SPRINT
           WHERE TEAM_id = '$team_id'
@@ -1025,6 +1018,9 @@ $app->get('/sprints/{quantity}',function($request,$response,$args){
           LIMIT $quantity";
   $q = $db->query($sql);
   $sprints = $q->fetchAll(PDO::FETCH_ASSOC);
+  // $start_date = $sprints[0]['start_date'];
+  // $end_date = $sprints[0]['end_date'];
+  $now = date('Y-m-d');
   //$TEAM_id = $sprints['TEAM_id'];
   $sprints_adj = array();
   $sql = "SELECT name
@@ -1036,11 +1032,24 @@ $app->get('/sprints/{quantity}',function($request,$response,$args){
     $sprint_adj = array();
     $sprint_adj['id'] = $sprint['id'];
     $sprint_adj['info'] = $sprint['info'];
-    $sprint_adj['date'] = $sprint['start_date'];
-    $sprint_adj['team_name'] = "bob";
+    $sprint_adj['start_date'] = $sprint['start_date'];
+    $sprint_adj['end_date'] = $sprint['end_date'];
     $sprint_adj['scrum_master'] = $sprint['scrum_master'];
     $sprint_adj['scribe'] = $sprint['scribe'];
     $sprint_adj['team_name'] = $team_name['name'];
+    $start_date = $sprint_adj['start_date'];
+    $end_date = $sprint_adj['end_date'];
+    if(strtotime($now) > strtotime($start_date)){
+      $sprint_adj['sprint_started'] = true;
+    }
+    else{
+      $sprint_adj['sprint_started'] = false;
+    }
+    $duration = abs(strtotime($end_date) - strtotime($start_date));
+    $progress = abs(strtotime($now) - strtotime($start_date));
+    $percentage = ($progress/$duration)*100;
+    $sprint_adj['progress_bar'] = $percentage;
+
     array_push($sprints_adj,$sprint_adj);
   }
   $obj['sprints'] = $sprints_adj;
