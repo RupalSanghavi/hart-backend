@@ -322,14 +322,15 @@ $app->put('/newstudent', function($request,$response,$args){
   $array = $q->fetch(PDO::FETCH_ASSOC);
   $email = $array['username'];
   $sql = "UPDATE STUDENT
-          SET first_name = '$first_name'
-          last_name = '$last_name'
-          image = '$image'
-          info = '$info'
-          major = '$major'
-          knowledge = '$knowledge'
+          SET first_name = '$first_name',
+          last_name = '$last_name',
+          image = '$image',
+          info = '$info',
+          major = '$major',
+          knowledge = '$knowledge',
           skills_abilities = '$skills_abilities'
           WHERE email = '$email'";
+  echo $sql;
   $db->query($sql);
 });
 $app->post('/registration',function($request,$response,$args)
