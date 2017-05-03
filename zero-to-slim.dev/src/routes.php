@@ -289,7 +289,6 @@ $app->post('/student/add', function($request,$response,$args){
   $sql2 = "INSERT INTO STUDENT
          (first_name,last_name,email,CLASS_id)
          VALUES ('$firstName','$lastName','$email','$class_id')";
-  echo $sql;
   $q = $db->query($sql2);
 
 });
