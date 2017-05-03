@@ -1194,3 +1194,25 @@ $app->post('/sprint',function($request,$response,$args){
   return $response->withJson($status);
 
 });
+$app->get('/stats/{team_id}',function($request,$response,$args){
+  $db = $this->dbConn;
+  $team_id = $request->getAttribute('team_id');
+  $sql = "SELECT COUNT(id) as value, major as name
+          FROM STUDENT
+          WHERE TEAM_id = $team_id
+          GROUP BY major";
+  $q = $db->query($sql);
+  $check = $q->fetchAll(PDO::FETCH_ASSOC);
+  $obj_return['majors'] = $check;
+  $sql = "SELECT COUNT(s.id) as value, hf.focus_name as name
+          FROM STUDENT s
+          INNER JOIN HLA_FOCUS hf
+          WHERE s.TEAM_id = $team_id
+          AND hf.STUDENT_id = s.id
+          GROUP BY hf.focus_name";
+  echo $sql;
+  $q = $db->query($sql);
+  $check = $q->fetchAll(PDO::FETCH_ASSOC);
+  $obj_return['focuses'] = $check;
+  return $response->withJson($obj_return);
+});
