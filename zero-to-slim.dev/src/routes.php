@@ -1262,7 +1262,6 @@ $app->get('/stats/{team_id}',function($request,$response,$args){
           WHERE s.TEAM_id = $team_id
           AND hf.STUDENT_id = s.id
           GROUP BY hf.focus_name";
-  echo $sql;
   $q = $db->query($sql);
   $check = $q->fetchAll(PDO::FETCH_ASSOC);
   $obj_return['focuses'] = $check;
