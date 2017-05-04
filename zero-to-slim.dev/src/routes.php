@@ -155,11 +155,26 @@ $app->post('/majors', function ($request, $response, $args) {
 $app->get('/sections', function ($request, $response, $args) {
   try{
     $db = $this->dbConn;
-    $sql = 'SELECT section
-            FROM CLASS;';
+    $year = date('Y');
+    $month = date('m');
+    if($month <= 5){
+      $semester = "Spring";
+    }
+    else{
+      $semester = "Fall";
+  }
+    $sql = "SELECT c.section
+            FROM CLASS c
+            WHERE c.year = '$year'
+            AND c.semester = '$semester'";
     $q = $db->query($sql);
-    $check = $q->fetchAll(PDO::FETCH_ASSOC);
-    return $response->withJson($check);
+    $obj = $q->fetchAll(PDO::FETCH_ASSOC);
+    $sections['sections'] = array();
+    foreach($obj as $section){
+      array_push($sections['sections'],$section['section']);
+    }
+    #$sections['sections'] = $obj;
+    return $response->withJson($sections);
   }
   catch(PDOException $e){
     $this->notFoundHandler;
