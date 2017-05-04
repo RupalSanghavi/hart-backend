@@ -700,6 +700,34 @@ $app->get('/forms/t_mbd/{sprint_num}',function($request,$response,$args){
   }
 
 });
+$app->get('/forms/i_mbd',function($request,$response,$args){
+  try{
+    $db = $this->dbConn;
+    $sql = "SELECT s.id
+            FROM SESSIONS ss
+            INNER JOIN STUDENT s
+            WHERE ss.username = s.email
+            AND ss.id = 1";
+    echo $sql;
+    $q = $db->query($sql);
+    $array = $q->fetch(PDO::FETCH_ASSOC);
+    $id = $array['id'];
+
+    $sql = "SELECT *
+            FROM MBDForm
+            WHERE STUDENT_id = '$id'";
+    $q = $db->query($sql);
+    $mbd = $q->fetch(PDO::FETCH_ASSOC);
+    $mbd_adj['more'] = $mbd['More'];
+    $mbd_adj['better'] = $mbd['Better'];
+    $mbd_adj['different'] = $mbd['Different'];
+    return $response->withJson($mbd_adj);
+  }
+  catch(PDOException $e){
+    print "Error!: " . $e->getMessage() . "<br/>";
+    $this->notFoundHandler;
+  }
+});
 $app->post('/forms/t_mbd/{team_id}',function($request,$response,$args){
 
   try{
