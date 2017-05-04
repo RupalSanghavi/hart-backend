@@ -728,7 +728,7 @@ $app->get('/forms/i_mbd',function($request,$response,$args){
     $this->notFoundHandler;
   }
 });
-$app->post('/forms/t_mbd/{team_id}',function($request,$response,$args){
+$app->post('/forms/t_mbd',function($request,$response,$args){
 
   try{
       $db = $this->dbConn;
