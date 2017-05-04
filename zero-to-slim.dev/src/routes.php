@@ -637,42 +637,52 @@ $app->get('/forms/team-charter',function($request,$response,$args){
 
   return $response->withJson($obj);
 });
-
-$app->post('/forms/team-charter/{team_id}',function($request,$response,$args){
+//
+// $app->post('/forms/team-charter',function($request,$response,$args){
+//   try{
+//     $db = $this->dbConn;
+//     $sql = "SELECT team_id
+//             FROM SESSIONS
+//             WHERE id = 1;";
+//     $q = $db->query($sql);
+//     $obj = $q->fetch(PDO::FETCH_ASSOC);
+//     $TEAM_id = $obj['team_id'];
+//     $charter = $request->getParsedBody();
+//     $ideate = $charter['ideate'];
+//     $decision_making = $charter['decision_making'];
+//     $disputes = $charter['disputes'];
+//     $conflicts = $charter['conflicts'];
+//     $fun = $charter['fun'];
+//     $purpose = $charter['purpose'];
+//     $stakeholders = $charter['stakeholders'];
+//     $mission = $charter['mission'];
+//     $sql = "UPDATE TEAM_CHARTER
+//             SET ideating = '$ideate',
+//             decision_making = '$decision_making',
+//             disputes = '$disputes',
+//             fun = '$fun',
+//             team_purpose = '$purpose',
+//             stakeholders = '$stakeholders',
+//             mission = '$mission'
+//             WHERE TEAM_id = $TEAM_id";
+//     $q = $db->query($sql);
+//     $success['messages'] = 'success!!!';
+//     return $response->withJson($success);
+//   }
+//   catch(PDOException $e){
+//     print "Error!: " . $e->getMessage() . "<br/>";
+//     $this->notFoundHandler;
+//   }
+// });
+$app->get('/forms/t_mbd/{sprint_num}',function($request,$response,$args){
   try{
     $db = $this->dbConn;
-    $TEAM_id = $request->getAttribute('team_id');
-    $charter = $request->getParsedBody();
-    $ideate = $charter['ideate'];
-    $decision_making = $charter['decision_making'];
-    $disputes = $charter['disputes'];
-    $conflicts = $charter['conflicts'];
-    $fun = $charter['fun'];
-    $purpose = $charter['purpose'];
-    $stakeholders = $charter['stakeholders'];
-    $mission = $charter['mission'];
-    $sql = "UPDATE TEAM_CHARTER
-            SET ideating = '$ideate',
-            decision_making = '$decision_making',
-            disputes = '$disputes',
-            fun = '$fun',
-            team_purpose = '$purpose',
-            stakeholders = '$stakeholders',
-            mission = '$mission'
-            WHERE TEAM_id = $TEAM_id";
+    $sql = "SELECT team_id
+            FROM SESSIONS
+            WHERE id = 1;";
     $q = $db->query($sql);
-    $success['messages'] = 'success!!!';
-    return $response->withJson($success);
-  }
-  catch(PDOException $e){
-    print "Error!: " . $e->getMessage() . "<br/>";
-    $this->notFoundHandler;
-  }
-});
-$app->get('/forms/t_mbd/{team_id}/{sprint_num}',function($request,$response,$args){
-  try{
-    $db = $this->dbConn;
-    $team_id = $request->getAttribute('team_id');
+    $obj = $q->fetch(PDO::FETCH_ASSOC);
+    $team_id = $obj['team_id'];
     $sprint_num = $request->getAttribute('sprint_num');
     $sql = "SELECT *
             FROM MBDForm
