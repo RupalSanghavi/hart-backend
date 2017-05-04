@@ -851,9 +851,14 @@ $app->post('/students/delete',function($request,$response,$args){
   $success['status'] = "success";
   return $response->withJson($success);
 });
-$app->get('/calendar/{team_id}',function($request,$response,$args){
+$app->get('/calendar',function($request,$response,$args){
     $db = $this->dbConn;
-    $id = $request->getAttribute('team_id');
+    $sql = "SELECT team_id
+            FROM SESSIONS
+            WHERE id = 1;";
+    $q = $db->query($sql);
+    $obj = $q->fetch(PDO::FETCH_ASSOC);
+    $id = $obj['team_id'];
     $sql = "SELECT *
             FROM EVENTS
             WHERE TEAM_id = '$id'";
