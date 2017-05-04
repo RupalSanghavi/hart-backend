@@ -376,7 +376,7 @@ insert into STUDENT (id, first_name, last_name, image, info, knowledge, skills_a
 insert into STUDENT (id, first_name, last_name, image, info, knowledge, skills_abilities, CLASS_id, TEAM_id, email, MBDForm_id, salt, hash, major) values (9, 'Christian', 'MacMenamin', 'https://cdn.vectorstock.com/i/thumb-large/48/33/10704833.jpg','I like to solve problems in creative ways. ', 'Arduino, circuit board making.', 'JavaScript', 1, 1, 'cmacmenamin8@alexa.com', 9, 'in', 'lkTGIihVfjZV', 'Computer Engineering');
 insert into STUDENT (id, first_name, last_name, image, info, knowledge, skills_abilities, CLASS_id, TEAM_id, email, MBDForm_id, salt, hash, major) values (10, 'Walden', 'Hendrikse', 'https://cdn.vectorstock.com/i/thumb-large/48/33/10704833.jpg', 'I like to analyze. ', 'Battlebots', 'Fortran, Rust', 1, 2, 'whendrikse9@si.edu', 10, 'hac', 'EgrR8Qqonn', 'Computer Engineering');
 insert into STUDENT (id, first_name, last_name, image, info, knowledge, skills_abilities, CLASS_id, TEAM_id, email, MBDForm_id, salt, hash, major) values
-                    (11,"Rupal","Sanghavi","image","I love to code.","Coding","Coding",1,2,"test@gmail.com",10,"$2a$10$7Dst8pZHelwgemSuGWn04A==","$2a$10$7Dst8pZHelwgemSuGWn04.cmyHa/D1PiOTdhq5/6eHDvsvA970O.i","cse");
+                    (11,"Rupal","Sanghavi","image","I love to code.","Coding","Coding",1,2,"test@gmail.com",10,"$2a$10$7Dst8pZHelwgemSuGWn04A==","$2a$10$7Dst8pZHelwgemSuGWn04.cmyHa/D1PiOTdhq5/6eHDvsvA970O.i","Computer Science");
 insert into HLA_FOCUS (focus_name, STUDENT_id, id) values ('Communication', 1, 1);
 insert into HLA_FOCUS (focus_name, STUDENT_id, id) values ('Problem Solving', 2, 2);
 insert into HLA_FOCUS (focus_name, STUDENT_id, id) values ('Strategic Perspective', 3, 3);

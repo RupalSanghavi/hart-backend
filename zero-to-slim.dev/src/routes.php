@@ -926,6 +926,7 @@ $app->get('/calendar',function($request,$response,$args){
     $sql = "SELECT *
             FROM EVENTS
             WHERE TEAM_id = '$id'";
+    echo $sql;
     $q = $db->query($sql);
     $events = $q->fetchAll(PDO::FETCH_ASSOC);
     $events_adj = array();
