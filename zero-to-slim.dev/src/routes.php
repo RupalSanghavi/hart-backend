@@ -223,6 +223,42 @@ $app->post('/team', function($request,$response,$args){
     }
 
 });
+$app->get('/team', function($request,$response,$args){
+  $db = $this->dbConn;
+
+  $sql = "SELECT team_id
+          FROM SESSIONS
+          WHERE id = 1;";
+  $q = $db->query($sql);
+  $obj = $q->fetch(PDO::FETCH_ASSOC);
+  $team_id = $obj['team_id'];
+  try{
+    $db = $this->dbConn;
+    $sql = "SELECT *
+            FROM TEAM
+            WHERE id = '$team_id'";
+    $q = $db->query($sql);
+    $check = $q->fetch(PDO::FETCH_ASSOC);
+    $CLASS_id = $check['CLASS_id'];
+    $sql = "SELECT id, first_name, last_name
+            FROM STUDENT
+            WHERE TEAM_id = '$team_id'";
+    $q = $db->query($sql);
+    $members = $q->fetchAll(PDO::FETCH_ASSOC);
+    $sql = "SELECT section
+            FROM CLASS
+            WHERE id = '$CLASS_id'";
+    $q = $db->query($sql);
+    $section = $q->fetch(PDO::FETCH_ASSOC);
+    $check['members'] = $members;
+    $check['section'] = $section['section'];
+    return $response->withJson($check);
+  }
+  catch(PDOException $e){
+    $this->notFoundHandler;
+  }
+
+});
 $app->get('/team/{team_id}', function($request,$response,$args){
   $team_id = $request->getAttribute('team_id');
   $db = $this->dbConn;
