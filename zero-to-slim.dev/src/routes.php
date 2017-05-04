@@ -871,8 +871,8 @@ $app->get('/faculty',function($request,$response,$args){
     $faculty_adj = array();
     foreach($faculty as $person){
       $obj = array();
-      $obj['firstName'] = $person['first_name'];
-      $obj['lastName'] = $person['last_name'];
+      $obj['first_name'] = $person['first_name'];
+      $obj['last_name'] = $person['last_name'];
       $obj['id'] = $person['id'];
       array_push($faculty_adj,$obj);
     }
@@ -885,8 +885,8 @@ $app->get('/faculty',function($request,$response,$args){
     $admin_adj = array();
     foreach($admin as $person){
       $obj2 = array();
-      $obj2['firstName'] = $person['first_name'];
-      $obj2['lastName'] = $person['last_name'];
+      $obj2['first_name'] = $person['first_name'];
+      $obj2['last_name'] = $person['last_name'];
       $obj2['id'] = $person['id'];
       array_push($admin_adj,$obj2);
     }
