@@ -1100,7 +1100,12 @@ $app->get('/teamsprints/{team_id}',function($request,$response,$args){
 $app->get('/sprints/{quantity}',function($request,$response,$args){
   $db = $this->dbConn;
   $quantity = $request->getAttribute('quantity');
-  $email = $_SESSION['username'];
+  $sql = "SELECT username
+          FROM SESSIONS
+          WHERE id = 1";
+  $q = $db->query($sql);
+  $array = $q->fetch(PDO::FETCH_ASSOC);
+  $email = $array['username'];
   $sql = "SELECT t.id
           FROM STUDENT s
           INNER JOIN TEAM t
