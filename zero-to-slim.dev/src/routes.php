@@ -1093,9 +1093,15 @@ $app->put('/profilepic',function($request,$response,$args){
   return $response->withJson($image_obj);
 
 });
-$app->get('/teamsprints/{team_id}',function($request,$response,$args){
+$app->get('/teamsprints',function($request,$response,$args){
   $db = $this->dbConn;
-  $team_id = $request->getAttribute('team_id');
+
+  $sql = "SELECT team_id
+          FROM SESSIONS
+          WHERE id = 1;";
+  $q = $db->query($sql);
+  $obj = $q->fetch(PDO::FETCH_ASSOC);
+  $team_id = $obj['team_id'];
   $sql = "SELECT *
           FROM SPRINT
           WHERE TEAM_id = '$team_id'
