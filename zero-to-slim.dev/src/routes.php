@@ -578,9 +578,14 @@ $app->get('/forms',function($request,$response,$args){
   }
   return $response->withJson($to_return);
 });
-$app->get('/forms/team-charter/{team_id}',function($request,$response,$args){
+$app->get('/forms/team-charter',function($request,$response,$args){
   $db = $this->dbConn;
-  $team_id = $request->getAttribute('team_id');
+  $sql = "SELECT team_id
+          FROM SESSIONS
+          WHERE id = 1;";
+  $q = $db->query($sql);
+  $obj = $q->fetch(PDO::FETCH_ASSOC);
+  $team_id = $obj['team_id'];
   $sql = "SELECT t.name, tc.*
           FROM TEAM t
           INNER JOIN TEAM_CHARTER tc
