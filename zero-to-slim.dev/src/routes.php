@@ -638,42 +638,42 @@ $app->get('/forms/team-charter',function($request,$response,$args){
   return $response->withJson($obj);
 });
 //
-// $app->post('/forms/team-charter',function($request,$response,$args){
-//   try{
-//     $db = $this->dbConn;
-//     $sql = "SELECT team_id
-//             FROM SESSIONS
-//             WHERE id = 1;";
-//     $q = $db->query($sql);
-//     $obj = $q->fetch(PDO::FETCH_ASSOC);
-//     $TEAM_id = $obj['team_id'];
-//     $charter = $request->getParsedBody();
-//     $ideate = $charter['ideate'];
-//     $decision_making = $charter['decision_making'];
-//     $disputes = $charter['disputes'];
-//     $conflicts = $charter['conflicts'];
-//     $fun = $charter['fun'];
-//     $purpose = $charter['purpose'];
-//     $stakeholders = $charter['stakeholders'];
-//     $mission = $charter['mission'];
-//     $sql = "UPDATE TEAM_CHARTER
-//             SET ideating = '$ideate',
-//             decision_making = '$decision_making',
-//             disputes = '$disputes',
-//             fun = '$fun',
-//             team_purpose = '$purpose',
-//             stakeholders = '$stakeholders',
-//             mission = '$mission'
-//             WHERE TEAM_id = $TEAM_id";
-//     $q = $db->query($sql);
-//     $success['messages'] = 'success!!!';
-//     return $response->withJson($success);
-//   }
-//   catch(PDOException $e){
-//     print "Error!: " . $e->getMessage() . "<br/>";
-//     $this->notFoundHandler;
-//   }
-// });
+$app->post('/forms/team-charter',function($request,$response,$args){
+  try{
+    $db = $this->dbConn;
+    $sql = "SELECT team_id
+            FROM SESSIONS
+            WHERE id = 1;";
+    $q = $db->query($sql);
+    $obj = $q->fetch(PDO::FETCH_ASSOC);
+    $TEAM_id = $obj['team_id'];
+    $charter = $request->getParsedBody();
+    $ideate = $charter['ideate'];
+    $decision_making = $charter['decision_making'];
+    $disputes = $charter['disputes'];
+    $conflicts = $charter['conflicts'];
+    $fun = $charter['fun'];
+    $purpose = $charter['purpose'];
+    $stakeholders = $charter['stakeholders'];
+    $mission = $charter['mission'];
+    $sql = "UPDATE TEAM_CHARTER
+            SET ideating = '$ideate',
+            decision_making = '$decision_making',
+            disputes = '$disputes',
+            fun = '$fun',
+            team_purpose = '$purpose',
+            stakeholders = '$stakeholders',
+            mission = '$mission'
+            WHERE TEAM_id = $TEAM_id";
+    $q = $db->query($sql);
+    $success['messages'] = 'success!!!';
+    return $response->withJson($success);
+  }
+  catch(PDOException $e){
+    print "Error!: " . $e->getMessage() . "<br/>";
+    $this->notFoundHandler;
+  }
+});
 $app->get('/forms/t_mbd/{sprint_num}',function($request,$response,$args){
   try{
     $db = $this->dbConn;
@@ -700,7 +700,35 @@ $app->get('/forms/t_mbd/{sprint_num}',function($request,$response,$args){
   }
 
 });
-$app->post('/forms/t_mbd/{team_id}',function($request,$response,$args){
+$app->get('/forms/i_mbd',function($request,$response,$args){
+  try{
+    $db = $this->dbConn;
+    $sql = "SELECT s.id
+            FROM SESSIONS ss
+            INNER JOIN STUDENT s
+            WHERE ss.username = s.email
+            AND ss.id = 1";
+    echo $sql;
+    $q = $db->query($sql);
+    $array = $q->fetch(PDO::FETCH_ASSOC);
+    $id = $array['id'];
+
+    $sql = "SELECT *
+            FROM MBDForm
+            WHERE STUDENT_id = '$id'";
+    $q = $db->query($sql);
+    $mbd = $q->fetch(PDO::FETCH_ASSOC);
+    $mbd_adj['more'] = $mbd['More'];
+    $mbd_adj['better'] = $mbd['Better'];
+    $mbd_adj['different'] = $mbd['Different'];
+    return $response->withJson($mbd_adj);
+  }
+  catch(PDOException $e){
+    print "Error!: " . $e->getMessage() . "<br/>";
+    $this->notFoundHandler;
+  }
+});
+$app->post('/forms/t_mbd',function($request,$response,$args){
 
   try{
       $db = $this->dbConn;
@@ -876,40 +904,44 @@ $app->get('/calendar',function($request,$response,$args){
     $obj['Events'] = $events_adj;
     return $response->withJson($obj);
   });
-// $app->post('/calendar/{team_id}',function($request,$response,$args){
-//   $db = $this->dbConn;
-//
-//   $id = $request->getAttribute('team_id');
-//   $event = $request->getParsedBody();
-//   $title = $event['title'];
-//   $startdate = $event['startdate'];
-//   $enddate = $event['enddate'];
-//   $location = $event['location'];
-//   $description = $event['description'];
-//   $creator = $event['creator'];
-//   $created_date = $event['created_date'];
-//   $sql = "INSERT INTO EVENTS
-//           (title,start_date,end_date,location,description,creator,create_date
-//           ,TEAM_id)
-//           VALUES('$title','$startdate','$enddate','$location','$description'
-//           ,'$creator','$created_date','$id')";
-//   $q = $db->query($sql);
-//   $sql = "SELECT *
-//           FROM EVENTS
-//           ORDER BY id DESC
-//           LIMIT 1";
-//   $q = $db->query($sql);
-//   $event = $q->fetch(PDO::FETCH_ASSOC);
-//   $event_adj['id'] = $event['id'];
-//   $event_adj['title'] = $event['title'];
-//   $event_adj['startdate'] = $event['start_date'];
-//   $event_adj['enddate'] = $event['end_date'];
-//   $event_adj['location'] = $event['location'];
-//   $event_adj['description'] = $event['description'];
-//   $event_adj['creator'] = $event['creator'];
-//   $event_adj['created_date'] = $event['create_date'];
-//   return $response->withJson($event_adj);
-// });
+$app->post('/calendar/{team_id}',function($request,$response,$args){
+  $db = $this->dbConn;
+  $sql = "SELECT team_id
+          FROM SESSIONS
+          WHERE id = 1;";
+  $q = $db->query($sql);
+  $obj = $q->fetch(PDO::FETCH_ASSOC);
+  $id = $obj['team_id'];
+  $event = $request->getParsedBody();
+  $title = $event['title'];
+  $startdate = $event['startdate'];
+  $enddate = $event['enddate'];
+  $location = $event['location'];
+  $description = $event['description'];
+  $creator = $event['creator'];
+  $created_date = $event['created_date'];
+  $sql = "INSERT INTO EVENTS
+          (title,start_date,end_date,location,description,creator,create_date
+          ,TEAM_id)
+          VALUES('$title','$startdate','$enddate','$location','$description'
+          ,'$creator','$created_date','$id')";
+  $q = $db->query($sql);
+  $sql = "SELECT *
+          FROM EVENTS
+          ORDER BY id DESC
+          LIMIT 1";
+  $q = $db->query($sql);
+  $event = $q->fetch(PDO::FETCH_ASSOC);
+  $event_adj['id'] = $event['id'];
+  $event_adj['title'] = $event['title'];
+  $event_adj['startdate'] = $event['start_date'];
+  $event_adj['enddate'] = $event['end_date'];
+  $event_adj['location'] = $event['location'];
+  $event_adj['description'] = $event['description'];
+  $event_adj['creator'] = $event['creator'];
+  $event_adj['created_date'] = $event['create_date'];
+  return $response->withJson($event_adj);
+});
 $app->get('/calendar/{month}',function($request,$response,$args){
   $db = $this->dbConn;
   $month = $request->getAttribute('month');
