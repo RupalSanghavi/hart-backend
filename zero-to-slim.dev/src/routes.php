@@ -1201,8 +1201,42 @@ $app->get('/sprint/{sprint_id}',function($request,$response,$args){
             FROM SPRINT
             WHERE id = '$sprint_id'";
     $q = $db->query($sql);
-    $sprint = $q->fetchAll(PDO::FETCH_ASSOC);
-    return $response->withJson($sprint);
+    $sprints = $q->fetchAll(PDO::FETCH_ASSOC);
+
+    $now = date('Y-m-d');
+    //$TEAM_id = $sprints['TEAM_id'];
+    $sprints_adj = array();
+    // $sql = "SELECT name
+    //         FROM TEAM
+    //         WHERE id = '$team_id'";
+    // $q = $db->query($sql);
+    // $team_name = $q->fetch(PDO::FETCH_ASSOC);
+    foreach($sprints as $sprint){
+      $sprint_adj = array();
+      $sprint_adj['id'] = $sprint['id'];
+      $sprint_adj['info'] = $sprint['info'];
+      $sprint_adj['start_date'] = $sprint['start_date'];
+      $sprint_adj['end_date'] = $sprint['end_date'];
+      $sprint_adj['scrum_master'] = $sprint['scrum_master'];
+      $sprint_adj['scribe'] = $sprint['scribe'];
+      $start_date = $sprint_adj['start_date'];
+      $end_date = $sprint_adj['end_date'];
+      if(strtotime($now) > strtotime($start_date)){
+        $sprint_adj['sprint_started'] = true;
+      }
+      else{
+        $sprint_adj['sprint_started'] = false;
+      }
+      $duration = abs(strtotime($end_date) - strtotime($start_date));
+      $progress = abs(strtotime($now) - strtotime($start_date));
+      $percentage = ($progress/$duration)*100;
+      $sprint_adj['progress_bar'] = $percentage;
+
+      array_push($sprints_adj,$sprint_adj);
+    }
+    $obj['sprints'] = $sprints_adj;
+
+    return $response->withJson($sprints_adj[0]);
 
   }
   catch(PDOException $e){
